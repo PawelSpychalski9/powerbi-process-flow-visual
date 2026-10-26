@@ -1,5 +1,6 @@
 import { GraphResult } from "./graph";
 import { layoutGraph } from "./layout";
+import { Appearance, GraphSettings, readSettings, resolveAppearance } from "./formatting";
 
 export interface RenderOptions {
     width: number;
@@ -8,6 +9,9 @@ export interface RenderOptions {
     markerId: string;
     locale?: string;
     zoom?: ZoomState;
+    settings?: GraphSettings;
+    appearance?: Appearance;
+    allowInteractions?: boolean;
 }
 
 export interface ZoomState {
@@ -36,6 +40,17 @@ export function renderGraph(container: HTMLElement, result: GraphResult, options
     container.className = "process-flow";
     container.style.width = `${Math.max(0, options.width)}px`;
     container.style.height = `${Math.max(0, options.height)}px`;
+    const settings = options.settings ?? readSettings();
+    const appearance = options.appearance ?? resolveAppearance(settings, undefined, options.accent);
+    const allowInteractions = options.allowInteractions !== false;
+    container.style.setProperty("--flow-fg", appearance.foreground);
+    container.style.setProperty("--flow-bg", appearance.background);
+    container.style.setProperty("--flow-active", appearance.active);
+    container.style.setProperty("--flow-font-size", `${settings.fontSize}px`);
+    container.style.setProperty("--flow-small-font-size", `${Math.max(10, settings.fontSize - 2)}px`);
+    container.style.setProperty("--flow-title-font-size", `${settings.fontSize + 1}px`);
+    container.dataset.highContrast = String(appearance.highContrast);
+    container.dataset.interactive = String(allowInteractions);
     const summary = document.createElement("div");
     summary.className = "process-flow-summary";
     summary.setAttribute("role", "status");
@@ -48,11 +63,26 @@ export function renderGraph(container: HTMLElement, result: GraphResult, options
         message.textContent = warning;
         container.appendChild(message);
     }
-    if (result.status !== "ready" || !options.width || !options.height) return;
-    const layout = layoutGraph(result, options.locale);
+    if (result.status !== "ready") {
+        const state = document.createElement("div");
+        state.className = "process-flow-state";
+        state.setAttribute("role", result.status === "invalid" ? "alert" : "note");
+        const heading = document.createElement("h2");
+        heading.textContent = result.status === "invalid" ? "Check your data" : "Build a process graph";
+        const help = document.createElement("p");
+        help.textContent = result.message.includes("Assign") ?
+            "Add text fields to Source and Target, and a numeric column or measure to Value. Optional: Tooltip ID, Node Title, Node Description, Label, and Group." :
+            "Check the current filters and field assignments. Each connection needs non-empty text IDs and a finite numeric Value.";
+        state.append(heading, help);
+        container.appendChild(state);
+        return;
+    }
+    if (!options.width || !options.height) return;
+    const layout = layoutGraph(result, options.locale, settings);
     const viewport = document.createElement("div");
     viewport.className = "process-flow-viewport";
-    viewport.tabIndex = 0;
+    viewport.tabIndex = allowInteractions ? 0 : -1;
+    if (!allowInteractions) viewport.style.overflow = "hidden";
     viewport.setAttribute("role", "region");
     viewport.setAttribute("aria-label", "Process graph. Scroll to explore connections beyond the viewport.");
     const svg = svgElement(document, "svg", {
@@ -65,7 +95,7 @@ export function renderGraph(container: HTMLElement, result: GraphResult, options
         id: options.markerId, viewBox: "0 0 10 10", refX: 9, refY: 5,
         markerWidth: 7, markerHeight: 7, orient: "auto", markerUnits: "strokeWidth"
     });
-    marker.appendChild(svgElement(document, "path", { d: "M 0 0 L 10 5 L 0 10 z", fill: options.accent }));
+    marker.appendChild(svgElement(document, "path", { d: "M 0 0 L 10 5 L 0 10 z", fill: appearance.edgeColor }));
     defs.appendChild(marker);
     svg.appendChild(defs);
 
@@ -73,8 +103,9 @@ export function renderGraph(container: HTMLElement, result: GraphResult, options
     const labels = svgElement(document, "g", { class: "process-flow-edge-labels" });
     for (const edge of layout.edges) {
         paths.appendChild(svgElement(document, "path", {
-            class: "process-flow-edge", d: edge.path, fill: "none", stroke: options.accent,
-            "stroke-width": 1.8, "marker-end": `url(#${options.markerId})`,
+            class: "process-flow-edge", d: edge.path, fill: "none", stroke: appearance.edgeColor,
+            "stroke-width": appearance.highContrast ? Math.max(2, settings.edgeWidth) : settings.edgeWidth,
+            "marker-end": `url(#${options.markerId})`,
             "data-edge-id": edge.id, "data-source": edge.source, "data-target": edge.target
         }));
         const group = svgElement(document, "g", {
@@ -82,15 +113,16 @@ export function renderGraph(container: HTMLElement, result: GraphResult, options
         });
         group.appendChild(svgElement(document, "rect", {
             x: -edge.labelWidth / 2, y: -edge.labelHeight / 2,
-            width: edge.labelWidth, height: edge.labelHeight, rx: 4
+            width: edge.labelWidth, height: edge.labelHeight, rx: 4,
+            fill: appearance.background, stroke: appearance.foreground, "stroke-width": appearance.highContrast ? 2 : 0.5
         }));
         const value = svgElement(document, "text", {
-            class: "process-flow-value", "text-anchor": "middle", y: edge.labelText ? -3 : 4
+            class: "process-flow-value", "text-anchor": "middle", y: edge.labelText ? -3 : settings.fontSize * 0.35
         });
         value.textContent = edge.valueText;
         group.appendChild(value);
         if (edge.labelText) {
-            const label = svgElement(document, "text", { class: "process-flow-label", "text-anchor": "middle", y: 12 });
+            const label = svgElement(document, "text", { class: "process-flow-label", "text-anchor": "middle", y: settings.fontSize / 2 + 6 });
             label.textContent = edge.labelText;
             group.appendChild(label);
         }
@@ -105,11 +137,12 @@ export function renderGraph(container: HTMLElement, result: GraphResult, options
             "data-node-id": node.id, "aria-label": `${node.title} (${node.id})`
         });
         group.appendChild(svgElement(document, "rect", {
-            width: node.width, height: node.height, rx: 7, stroke: options.accent, "stroke-width": 1.6
+            width: node.width, height: node.height, rx: 7, stroke: appearance.nodeBorder,
+            fill: appearance.nodeFill, "stroke-width": appearance.highContrast ? Math.max(2, settings.nodeBorderWidth) : settings.nodeBorderWidth
         }));
         const text = svgElement(document, "text", { "text-anchor": "middle", class: "process-flow-node-title" });
         node.lines.forEach((line, index) => {
-            const span = svgElement(document, "tspan", { x: node.width / 2, y: 25 + index * 17 });
+            const span = svgElement(document, "tspan", { x: node.width / 2, y: node.height * 0.33 + index * (settings.fontSize + 4) });
             span.textContent = line;
             text.appendChild(span);
         });
@@ -127,7 +160,7 @@ export function renderGraph(container: HTMLElement, result: GraphResult, options
     viewport.appendChild(svg);
     container.appendChild(viewport);
 
-    const zoom = options.zoom ?? createZoomState();
+    const zoom: ZoomState = allowInteractions ? options.zoom ?? createZoomState() : { ...createZoomState(), mode: "fit" };
     const toolbar = document.createElement("div");
     toolbar.className = "process-flow-zoom";
     toolbar.setAttribute("role", "group");
@@ -149,11 +182,11 @@ export function renderGraph(container: HTMLElement, result: GraphResult, options
     percentage.setAttribute("aria-live", "polite");
     toolbar.appendChild(percentage);
     const fit = button("Fit", "Fit graph to view");
-    container.appendChild(toolbar);
+    if (allowInteractions) container.appendChild(toolbar);
 
     const viewportSize = (): { width: number; height: number } => ({
         width: viewport.clientWidth || options.width,
-        height: viewport.clientHeight || Math.max(1, options.height - (summary.offsetHeight || 28) - 42 - result.warnings.length * 44)
+        height: viewport.clientHeight || Math.max(1, options.height - (summary.offsetHeight || 28) - (allowInteractions ? 42 : 0) - result.warnings.length * 44)
     });
     const fitScale = (): number => {
         const size = viewportSize();

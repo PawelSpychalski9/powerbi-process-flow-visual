@@ -143,7 +143,7 @@ test('host lifecycle preserves data on resize, clears on empty data update, and 
     assert.deepEqual(events, ['start', 'finish', 'start', 'finish']);
     view.update({dataViews: [], viewport: {width: 500, height: 400}, type: 2});
     assert.equal(container.querySelectorAll('svg').length, 0);
-    assert.deepEqual(view.getFormattingModel(), {cards: []});
+    assert.equal(view.getFormattingModel().cards.length, 5);
     view.destroy();
     assert.equal(container.children.length, 0);
 });

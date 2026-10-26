@@ -1,4 +1,7 @@
-# M00–M02 validation
+# M00–M03 validation
+
+For the Format pane, theme, high-contrast, and permission checks introduced in
+M03, see [formatting and usability](formatting.md).
 
 ## Repeatable local checks
 
@@ -71,7 +74,8 @@ success do not establish Power BI end-to-end behavior.
 ## Recorded local verification
 
 - Baseline lint, typecheck, and package succeeded before rendering changes.
-- The automated suite passes 26 parser, mapping, layout, DOM, lifecycle, and zoom tests.
+- The automated suite covers parser, mapping, layout, DOM, lifecycle, zoom, and
+  M03 formatting/theme/permission behavior. Run `npm.cmd test` for current counts.
 - The Chrome browser check verifies Fit against actual viewport and scroll
   dimensions, automatic refit after resize, scrollable overflow after zooming,
   and the fixed position of the bottom-left controls. It saves `.tmp/zoom-fit.png`
@@ -89,9 +93,10 @@ success do not establish Power BI end-to-end behavior.
   condensed to a DAG, ranked by longest path, and placed in stable ID order.
   Cyclic components share a column with separate outside routes; self-loops and
   longer connections have explicit routes. Disconnected nodes remain visible.
-- Nodes are fixed-size rectangles with two bounded title lines and an optional
-  ID line. Long text is shortened. Numeric labels retain the sign, use up to 12
-  significant digits, and switch to scientific notation for extreme magnitudes.
+- Nodes have two bounded title lines and an optional ID line. Node dimensions grow
+  with configured font size. Long text is shortened. Numeric labels retain the
+  sign, use automatic or author-selected decimal precision, and switch to
+  scientific notation for extreme magnitudes.
 - Spacing keeps the sample's node and label boxes separate. This is an initial
   layout, not an optimal crossing minimizer or obstacle-avoiding router. Dense
   graphs, many parallel edges, and complicated cycles can still produce crossings
@@ -104,9 +109,9 @@ success do not establish Power BI end-to-end behavior.
   across host updates. These navigation settings are per visual instance for the
   current session, not persisted in the report. Drag-to-pan and wheel zoom are not
   implemented; use scrollbars and the buttons.
-- Edge strokes use a Power BI palette accent, but full theme/high-contrast support
-  and formatting controls are deferred. The formatting model is intentionally
-  empty; scaffold controls are not presented as implemented settings.
+- M03 adds five formatting cards, host theme and high-contrast colors, implemented
+  landing/error states, and a static auto-fit mode when interactions are disabled.
+  See [the M03 guide](formatting.md) for settings and manual validation.
 - This milestone has no Power BI selection identities, cross-filtering, report
   tooltips, context menus, or complete keyboard navigation. Packaging warnings
   remain visible for these later features.

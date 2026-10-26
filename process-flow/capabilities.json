@@ -164,6 +164,131 @@
       }
     }
   ],
-  "objects": {},
-  "privileges": []
+  "objects": {
+    "nodes": {
+      "properties": {
+        "useTheme": {
+          "type": {
+            "bool": true
+          }
+        },
+        "fill": {
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "border": {
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "borderWidth": {
+          "type": {
+            "numeric": true
+          }
+        }
+      }
+    },
+    "edges": {
+      "properties": {
+        "useTheme": {
+          "type": {
+            "bool": true
+          }
+        },
+        "color": {
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "width": {
+          "type": {
+            "numeric": true
+          }
+        }
+      }
+    },
+    "labels": {
+      "properties": {
+        "fontSize": {
+          "type": {
+            "formatting": {
+              "fontSize": true
+            }
+          }
+        },
+        "automaticValues": {
+          "type": {
+            "bool": true
+          }
+        },
+        "decimalPlaces": {
+          "type": {
+            "numeric": true
+          }
+        },
+        "thousandsSeparator": {
+          "type": {
+            "bool": true
+          }
+        }
+      }
+    },
+    "layout": {
+      "properties": {
+        "horizontalSpacing": {
+          "type": {
+            "numeric": true
+          }
+        },
+        "verticalSpacing": {
+          "type": {
+            "numeric": true
+          }
+        }
+      }
+    },
+    "canvas": {
+      "properties": {
+        "useTheme": {
+          "type": {
+            "bool": true
+          }
+        },
+        "background": {
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "textColor": {
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "privileges": [],
+  "supportsLandingPage": true,
+  "supportsEmptyDataView": true
 }
