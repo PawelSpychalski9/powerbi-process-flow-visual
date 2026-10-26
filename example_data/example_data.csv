@@ -1,0 +1,10 @@
+Source,Target,Value,Tooltip ID,Node Title,Node Description,Label,Group
+A,B,-10,T001,Ingestion,Raw data ingestion,Validation loss,Input
+B,C,-18,T002,Validation,Data quality checks,Rejected records,Processing
+B,D,-5,T003,Validation,Data quality checks,Manual review,Processing
+C,E,-10,T004,Transformation,Transforming validated records,Processing loss,Transformation
+D,E,-1,T005,Manual Review,Verifying flagged records,Rejected after review,Review
+E,F,-8,T006,Output,Preparing processed records,Exported records,Output
+E,G,-3,T007,Output,Preparing processed records,Additional checks,Output
+F,H,-6,T008,Delivery,Delivering processed records,Delivery loss,Delivery
+G,H,-2,T009,Final Review,Reviewing remaining records,Review loss,Review

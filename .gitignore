@@ -1,0 +1,28 @@
+# Dependencies restored with npm ci
+node_modules/
+
+# Power BI visual build output and packages
+.tmp/
+dist/
+*.pbiviz
+*.tsbuildinfo
+webpack.statistics*.html
+
+# Logs and test output
+*.log
+coverage/
+
+# Local environment and development certificates
+.env
+.env.*
+!.env.example
+*.pfx
+*.p12
+*.key
+pbiviz-certs/
+PowerBICustomVisualTestPass.txt
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
