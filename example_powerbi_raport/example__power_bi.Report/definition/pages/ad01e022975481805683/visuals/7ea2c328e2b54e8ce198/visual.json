@@ -1,0 +1,436 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "7ea2c328e2b54e8ce198",
+  "position": {
+    "x": 69.136049440048581,
+    "y": 27.160590851447658,
+    "z": 0,
+    "height": 1039.5098862235875,
+    "width": 1792.5989961955454,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "processFlowBAAAB49BFE6440FCA0A95BC2620753B8",
+    "query": {
+      "queryState": {
+        "source": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "example_data"
+                    }
+                  },
+                  "Property": "Source"
+                }
+              },
+              "queryRef": "example_data.Source",
+              "nativeQueryRef": "Source"
+            }
+          ]
+        },
+        "target": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "example_data"
+                    }
+                  },
+                  "Property": "Target"
+                }
+              },
+              "queryRef": "example_data.Target",
+              "nativeQueryRef": "Target"
+            }
+          ]
+        },
+        "value": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "example_data"
+                        }
+                      },
+                      "Property": "Value"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(example_data.Value)",
+              "nativeQueryRef": "Suma elementów Value"
+            }
+          ]
+        },
+        "tooltipId": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "example_data"
+                    }
+                  },
+                  "Property": "Tooltip ID"
+                }
+              },
+              "queryRef": "example_data.Tooltip ID",
+              "nativeQueryRef": "Tooltip ID"
+            }
+          ]
+        },
+        "nodeTitle": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "example_data"
+                    }
+                  },
+                  "Property": "Node Title"
+                }
+              },
+              "queryRef": "example_data.Node Title",
+              "nativeQueryRef": "Node Title"
+            }
+          ]
+        },
+        "nodeDescription": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "example_data"
+                    }
+                  },
+                  "Property": "Node Description"
+                }
+              },
+              "queryRef": "example_data.Node Description",
+              "nativeQueryRef": "Node Description"
+            }
+          ]
+        },
+        "label": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "example_data"
+                    }
+                  },
+                  "Property": "Label"
+                }
+              },
+              "queryRef": "example_data.Label",
+              "nativeQueryRef": "Label"
+            }
+          ]
+        },
+        "group": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "example_data"
+                    }
+                  },
+                  "Property": "Group"
+                }
+              },
+              "queryRef": "example_data.Group",
+              "nativeQueryRef": "Group"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "example_data"
+                      }
+                    },
+                    "Property": "Value"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "nodes": [
+        {
+          "properties": {
+            "borderWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            },
+            "useTheme": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "border": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 5,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 8,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "edges": [
+        {
+          "properties": {
+            "useTheme": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 9,
+                      "Percent": -0.25
+                    }
+                  }
+                }
+              }
+            },
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "3D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "labels": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "24D"
+                }
+              }
+            },
+            "automaticValues": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "canvas": [
+        {
+          "properties": {
+            "useTheme": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "background": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 3,
+                      "Percent": -0.5
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "6c36f7efd0ba8e7e8578",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "example_data"
+              }
+            },
+            "Property": "Source"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "749b2916c4d11e7d89c2",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "example_data"
+              }
+            },
+            "Property": "Target"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "04747a284338670639f5",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "example_data"
+                  }
+                },
+                "Property": "Value"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "c7aedc1e601b30d358e3",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "example_data"
+              }
+            },
+            "Property": "Tooltip ID"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "7197213670015a24108d",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "example_data"
+              }
+            },
+            "Property": "Node Title"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "936cd5f210f4304c7384",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "example_data"
+              }
+            },
+            "Property": "Node Description"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "38626ec383f7fd2de800",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "example_data"
+              }
+            },
+            "Property": "Label"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "2310f7254b822f4d0614",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "example_data"
+              }
+            },
+            "Property": "Group"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

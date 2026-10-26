@@ -1,0 +1,323 @@
+{
+  "visual": {
+    "name": "processFlow",
+    "displayName": "Process Flow",
+    "guid": "processFlowBAAAB49BFE6440FCA0A95BC2620753B8",
+    "visualClassName": "Visual",
+    "version": "1.0.0.0",
+    "description": "An open-source Power BI custom visual for creating interactive process flow diagrams with nodes, directional connections, and quantitative values.",
+    "supportUrl": "https://github.com/PawelSpychalski9/powerbi-process-flow-visual/issues",
+    "gitHubUrl": "https://github.com/PawelSpychalski9/powerbi-process-flow-visual"
+  },
+  "author": {
+    "name": "Pawel Spychalski",
+    "email": "PawelSpychalski9@users.noreply.github.com"
+  },
+  "apiVersion": "5.11.0",
+  "style": "style/visual.less",
+  "stringResources": {},
+  "capabilities": {
+    "dataRoles": [
+      {
+        "name": "source",
+        "displayName": "Source",
+        "kind": "Grouping",
+        "requiredTypes": [
+          {
+            "text": true
+          }
+        ]
+      },
+      {
+        "name": "target",
+        "displayName": "Target",
+        "kind": "Grouping",
+        "requiredTypes": [
+          {
+            "text": true
+          }
+        ]
+      },
+      {
+        "name": "value",
+        "displayName": "Value",
+        "kind": "Measure",
+        "requiredTypes": [
+          {
+            "numeric": true
+          }
+        ]
+      },
+      {
+        "name": "tooltipId",
+        "displayName": "Tooltip ID",
+        "kind": "Grouping",
+        "requiredTypes": [
+          {
+            "text": true
+          }
+        ]
+      },
+      {
+        "name": "nodeTitle",
+        "displayName": "Node Title",
+        "kind": "Grouping",
+        "requiredTypes": [
+          {
+            "text": true
+          }
+        ]
+      },
+      {
+        "name": "nodeDescription",
+        "displayName": "Node Description",
+        "kind": "Grouping",
+        "requiredTypes": [
+          {
+            "text": true
+          }
+        ]
+      },
+      {
+        "name": "label",
+        "displayName": "Label",
+        "kind": "Grouping",
+        "requiredTypes": [
+          {
+            "text": true
+          }
+        ]
+      },
+      {
+        "name": "group",
+        "displayName": "Group",
+        "kind": "Grouping",
+        "requiredTypes": [
+          {
+            "text": true
+          }
+        ]
+      }
+    ],
+    "dataViewMappings": [
+      {
+        "conditions": [
+          {
+            "source": {
+              "max": 1
+            },
+            "target": {
+              "max": 1
+            },
+            "value": {
+              "max": 1
+            },
+            "tooltipId": {
+              "max": 1
+            },
+            "nodeTitle": {
+              "max": 1
+            },
+            "nodeDescription": {
+              "max": 1
+            },
+            "label": {
+              "max": 1
+            },
+            "group": {
+              "max": 1
+            }
+          }
+        ],
+        "table": {
+          "rows": {
+            "select": [
+              {
+                "for": {
+                  "in": "source"
+                }
+              },
+              {
+                "for": {
+                  "in": "target"
+                }
+              },
+              {
+                "for": {
+                  "in": "value"
+                }
+              },
+              {
+                "for": {
+                  "in": "tooltipId"
+                }
+              },
+              {
+                "for": {
+                  "in": "nodeTitle"
+                }
+              },
+              {
+                "for": {
+                  "in": "nodeDescription"
+                }
+              },
+              {
+                "for": {
+                  "in": "label"
+                }
+              },
+              {
+                "for": {
+                  "in": "group"
+                }
+              }
+            ],
+            "dataReductionAlgorithm": {
+              "top": {
+                "count": 1001
+              }
+            }
+          }
+        }
+      }
+    ],
+    "objects": {
+      "nodes": {
+        "properties": {
+          "useTheme": {
+            "type": {
+              "bool": true
+            }
+          },
+          "fill": {
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "border": {
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "borderWidth": {
+            "type": {
+              "numeric": true
+            }
+          }
+        }
+      },
+      "edges": {
+        "properties": {
+          "useTheme": {
+            "type": {
+              "bool": true
+            }
+          },
+          "color": {
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "width": {
+            "type": {
+              "numeric": true
+            }
+          }
+        }
+      },
+      "labels": {
+        "properties": {
+          "fontSize": {
+            "type": {
+              "formatting": {
+                "fontSize": true
+              }
+            }
+          },
+          "automaticValues": {
+            "type": {
+              "bool": true
+            }
+          },
+          "decimalPlaces": {
+            "type": {
+              "numeric": true
+            }
+          },
+          "thousandsSeparator": {
+            "type": {
+              "bool": true
+            }
+          }
+        }
+      },
+      "layout": {
+        "properties": {
+          "horizontalSpacing": {
+            "type": {
+              "numeric": true
+            }
+          },
+          "verticalSpacing": {
+            "type": {
+              "numeric": true
+            }
+          }
+        }
+      },
+      "canvas": {
+        "properties": {
+          "useTheme": {
+            "type": {
+              "bool": true
+            }
+          },
+          "background": {
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          },
+          "textColor": {
+            "type": {
+              "fill": {
+                "solid": {
+                  "color": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "privileges": [],
+    "supportsLandingPage": true,
+    "supportsEmptyDataView": true
+  },
+  "content": {
+    "js": "var processFlowBAAAB49BFE6440FCA0A95BC2620753B8;(()=>{\"use strict\";var e={439(e,t,o){o.d(t,{J4:()=>n,PD:()=>r,sb:()=>s}),o(210);const a=[{name:\"nodes\",label:\"Nodes\",settings:[{key:\"nodeUseTheme\",property:\"useTheme\",label:\"Use theme colors\",kind:\"boolean\",fallback:!0},{key:\"nodeFill\",property:\"fill\",label:\"Fill color\",kind:\"color\",fallback:\"#ffffff\"},{key:\"nodeBorder\",property:\"border\",label:\"Border color\",kind:\"color\",fallback:\"#1670a5\"},{key:\"nodeBorderWidth\",property:\"borderWidth\",label:\"Border width\",kind:\"number\",fallback:1.6,min:0,max:6}]},{name:\"edges\",label:\"Connections\",settings:[{key:\"edgeUseTheme\",property:\"useTheme\",label:\"Use theme color\",kind:\"boolean\",fallback:!0},{key:\"edgeColor\",property:\"color\",label:\"Color\",kind:\"color\",fallback:\"#1670a5\"},{key:\"edgeWidth\",property:\"width\",label:\"Line width\",kind:\"number\",fallback:1.8,min:.5,max:6}]},{name:\"labels\",label:\"Labels and values\",settings:[{key:\"fontSize\",property:\"fontSize\",label:\"Font size\",kind:\"number\",fallback:13,min:10,max:24,integer:!0},{key:\"automaticValues\",property:\"automaticValues\",label:\"Automatic number precision\",kind:\"boolean\",fallback:!0},{key:\"decimalPlaces\",property:\"decimalPlaces\",label:\"Decimal places\",kind:\"number\",fallback:2,min:0,max:8,integer:!0},{key:\"thousandsSeparator\",property:\"thousandsSeparator\",label:\"Thousands separator\",kind:\"boolean\",fallback:!0}]},{name:\"layout\",label:\"Spacing\",settings:[{key:\"horizontalSpacing\",property:\"horizontalSpacing\",label:\"Horizontal spacing\",kind:\"number\",fallback:180,min:180,max:500,integer:!0},{key:\"verticalSpacing\",property:\"verticalSpacing\",label:\"Vertical spacing\",kind:\"number\",fallback:76,min:40,max:300,integer:!0}]},{name:\"canvas\",label:\"Canvas\",settings:[{key:\"canvasUseTheme\",property:\"useTheme\",label:\"Use theme colors\",kind:\"boolean\",fallback:!0},{key:\"background\",property:\"background\",label:\"Background color\",kind:\"color\",fallback:\"#ffffff\"},{key:\"textColor\",property:\"textColor\",label:\"Text color\",kind:\"color\",fallback:\"#242424\"}]}];function s(e){const t={};for(const o of a)for(const a of o.settings){const s=e?.[o.name]?.[a.property];let n=a.fallback;if(\"number\"===a.kind&&\"number\"==typeof s&&Number.isFinite(s))n=Math.max(a.min,Math.min(a.max,a.integer?Math.round(s):s));else if(\"boolean\"===a.kind&&\"boolean\"==typeof s)n=s;else if(\"color\"===a.kind&&s&&\"object\"==typeof s&&\"solid\"in s){const e=s.solid?.color;\"string\"==typeof e&&/^#(?:[\\da-f]{3}|[\\da-f]{6})$/i.test(e)&&(n=e)}t[a.key]=n}return t}function n(e,t,o=\"#1670a5\"){const a=t?.foreground?.value??\"#242424\",s=t?.background?.value??\"#ffffff\";return t?.isHighContrast?{foreground:a,background:s,nodeFill:s,nodeBorder:a,edgeColor:a,active:t.foregroundSelected?.value??a,highContrast:!0}:{foreground:e.canvasUseTheme?a:e.textColor,background:e.canvasUseTheme?s:e.background,nodeFill:e.nodeUseTheme?s:e.nodeFill,nodeBorder:e.nodeUseTheme?o:e.nodeBorder,edgeColor:e.edgeUseTheme?o:e.edgeColor,active:o,highContrast:!1}}function r(e,t=!1){return{cards:a.map(o=>({uid:`${o.name}-card`,displayName:o.label,groups:[{uid:`${o.name}-group`,displayName:o.label,slices:o.settings.map(a=>{const s={objectName:o.name,propertyName:a.property},n={uid:`${o.name}-${a.property}`,displayName:a.label},r=e[a.key],i=t||\"nodes\"===o.name&&e.nodeUseTheme||\"edges\"===o.name&&e.edgeUseTheme||\"canvas\"===o.name&&e.canvasUseTheme;return\"color\"===a.kind?{...n,disabled:i,control:{type:\"ColorPicker\",properties:{descriptor:s,value:{value:r}}}}:\"boolean\"===a.kind?{...n,disabled:t&&\"useTheme\"===a.property,control:{type:\"ToggleSwitch\",properties:{descriptor:s,value:r}}}:{...n,disabled:\"decimalPlaces\"===a.key&&e.automaticValues,control:{type:\"NumUpDown\",properties:{descriptor:s,value:r,options:{minValue:{type:0,value:a.min},maxValue:{type:1,value:a.max}}}}}})}],revertToDefaultDescriptors:o.settings.map(e=>({objectName:o.name,propertyName:e.property}))}))}}},22(e,t,o){o.d(t,{kz:()=>r});const a=[\"source\",\"target\",\"value\",\"tooltipId\",\"nodeTitle\",\"nodeDescription\",\"label\",\"group\"],s=(e,t)=>e<t?-1:e>t?1:0;function n(e){return\"string\"==typeof e&&e.trim().length>0?e:void 0}function r(e){const t={nodes:[],edges:[],status:\"empty\",message:\"Assign Source, Target, and Value to display a process graph.\",warnings:[],skippedRows:0,inputRows:0},o=e?.table;if(!o)return t;const r=new Map;for(const e of a){const a=o.columns.map((t,o)=>t.roles?.[e]?o:-1).filter(e=>e>=0);if(a.length>1)return{...t,status:\"invalid\",message:`Assign only one field to ${e}.`};1===a.length&&r.set(e,a[0])}const i=[\"source\",\"target\",\"value\"].filter(e=>!r.has(e));if(i.length)return{...t,message:`Assign the required fields: ${i.join(\", \")}.`};const l=o.rows??[];if(t.inputRows=l.length,e.metadata?.segment||l.length>1e3)return{...t,status:\"invalid\",message:\"This graph is incomplete or exceeds 1000 edges. Filter the report to a smaller graph.\"};if(!l.length)return{...t,message:\"No connections match the current filters.\"};const d=new Map,c=new Map,h=new Map,p=new Set,g=new Set,u=new Map;if(l.forEach((e,o)=>{const a=t=>{const o=r.get(t);return void 0===o?void 0:e[o]},s=n(a(\"source\")),i=n(a(\"target\")),l=a(\"value\");if(!s||!i||\"number\"!=typeof l||!Number.isFinite(l))return void t.skippedRows++;for(const e of[s,i])d.has(e)||d.set(e,{id:e,title:e});for(const[e,t]of[[\"nodeTitle\",c],[\"nodeDescription\",h]]){const o=n(a(e));o&&(t.has(s)||t.set(s,new Set),t.get(s).add(o))}const m=n(a(\"tooltipId\"));m&&(p.has(m)&&g.add(\"Repeated Tooltip IDs were retained as separate edges; a 1:* detail relationship requires unique keys.\"),p.add(m));const f=n(a(\"label\")),b=n(a(\"group\")),w=JSON.stringify([s,i,l,m,f,b]),y=u.get(w)??0;u.set(w,y+1),t.edges.push({id:`${w}:${y}`,rowIndex:o,source:s,target:i,value:l,tooltipId:m,label:f,group:b})}),d.size>500)return{...t,edges:[],status:\"invalid\",message:\"This graph exceeds 500 nodes. Filter the report to a smaller graph.\"};for(const e of d.values()){const t=[...c.get(e.id)??[]].sort(s),o=[...h.get(e.id)??[]].sort(s);e.title=t[0]??e.id,e.description=o[0],(t.length>1||o.length>1)&&g.add(\"Conflicting source metadata was resolved using the lexicographically smallest non-empty title and description.\")}return t.skippedRows&&g.add(`${t.skippedRows} invalid row(s) skipped: Source and Target must be non-empty text; Value must be a finite number.`),t.nodes=[...d.values()].sort((e,t)=>s(e.id,t.id)),t.edges.sort((e,t)=>s(e.id,t.id)),t.warnings=[...g],t.status=t.edges.length?\"ready\":\"invalid\",t.message=t.edges.length?`${t.nodes.length} nodes · ${t.edges.length} edges`:\"No valid connections. Check Source, Target, and numeric Value.\",t}},886(e,t,o){o.d(t,{R:()=>l});var a=o(439);const s=(e,t)=>e<t?-1:e>t?1:0;function n(e,t){return Array.from(e).reduce((e,o)=>{const a=/[MW@#%]/.test(o)||o.codePointAt(0)>255?1:.64;return e+t*a},0)}function r(e,t,o){if(n(e,o)<=t)return e;const a=Array.from(e);let s=\"\";for(const e of a){if(n(s+e+\"…\",o)>t)break;s+=e}return s+\"…\"}function i(e,t,o){const a=Array.from(e.replace(/\\s+/g,\" \").trim());let s=\"\",i=0;for(;i<a.length&&n(s+a[i],o)<=t-24;)s+=a[i++];return i===a.length?[s]:[s,r(a.slice(i).join(\"\"),t-24,o)]}function l(e,t=\"en-US\",o=(0,a.sb)()){if(!e.nodes.length)return{nodes:[],edges:[],width:0,height:0};const l=Math.max(156,11.2*(o.fontSize+1)),d=Math.max(76,4.8*(o.fontSize+1)),c=Math.max(o.verticalSpacing,4.8*o.fontSize),h=Math.max(10,o.fontSize-2),p=Math.max(148,12*(o.fontSize-1)),g=Math.max(42,3.8*o.fontSize),u=function(e){const t=e.nodes.map(e=>e.id).sort(s),o=new Map(t.map(e=>[e,new Set])),a=new Map(t.map(e=>[e,new Set]));for(const t of e.edges)o.get(t.source).add(t.target),a.get(t.target).add(t.source);const n=new Set,r=[];for(const e of t){const t=[[e,!1]];for(;t.length;){const[e,a]=t.pop();if(a)r.push(e);else if(!n.has(e)){n.add(e),t.push([e,!0]);for(const a of[...o.get(e)].sort(s).reverse())n.has(a)||t.push([a,!1])}}}const i=new Set,l=[];for(const e of r.reverse()){if(i.has(e))continue;const t=[],o=[e];for(i.add(e);o.length;){const e=o.pop();t.push(e);for(const t of[...a.get(e)].sort(s).reverse())i.has(t)||(i.add(t),o.push(t))}l.push(t.sort(s))}return l.sort((e,t)=>s(e[0],t[0]))}(e),m=new Map;u.forEach((e,t)=>e.forEach(e=>m.set(e,t)));const f=u.map(()=>new Set),b=u.map(()=>0),w=u.map(()=>0);for(const t of e.edges){const e=m.get(t.source),o=m.get(t.target);e===o||f[e].has(o)||(f[e].add(o),b[o]++)}const y=u.map((e,t)=>t).filter(e=>0===b[e]);for(let e=0;e<y.length;e++){const t=y[e];for(const e of[...f[t]].sort((e,t)=>e-t))w[e]=Math.max(w[e],w[t]+1),0===--b[e]&&y.push(e)}const v=e=>w[m.get(e)],k=Array.from({length:Math.max(...w)+1},()=>[]);for(const t of[...e.nodes].sort((e,t)=>s(e.id,t.id)))k[v(t.id)].push(t);const x=[...e.edges].sort((e,t)=>s(e.id,t.id)),C=x.filter(e=>v(e.target)-v(e.source)>1),S=k.map(()=>0),$=new Map;for(const e of x){v(e.source)===v(e.target)&&S[v(e.source)]++;const t=JSON.stringify([e.source,e.target]);$.set(t,($.get(t)??0)+1)}const M=Math.max(o.horizontalSpacing,p+32),A=(Math.max(1,...$.values())-1)*g/2,T=36+C.length*g+A,z=Math.max(...k.map(e=>e.length*(d+c)-c)),B=[];let F=36;k.forEach((e,t)=>{const a=e.length*(d+c)-c;e.forEach((e,s)=>B.push({...e,x:F,y:T+(z-a)/2+s*(d+c),width:l,height:d,rank:t,lines:i(e.title,l,o.fontSize+1)})),F+=l+M+S[t]*g});const N=new Map(B.map(e=>[e.id,e])),L=new Map;let E;const P=o.automaticValues?{maximumSignificantDigits:12}:{minimumFractionDigits:o.decimalPlaces,maximumFractionDigits:o.decimalPlaces};P.useGrouping=o.thousandsSeparator;try{E=new Intl.NumberFormat(t,P)}catch{E=new Intl.NumberFormat(\"en-US\",P)}const V=k.map(()=>0);let D=0,I=T+z;const U=x.map(e=>{const t=N.get(e.source),a=N.get(e.target),s=t.x+t.width,i=t.y+t.height/2,l=a.x,d=a.y+a.height/2;let c,u,m;const f=JSON.stringify([e.source,e.target]),b=L.get(f)??0;if(L.set(f,b+1),t.rank===a.rank){const e=++V[t.rank],o=s+p/2+14+e*g;if(t.id===a.id){const e=t.y+t.height+28+b*g;c=`M ${s} ${i} L ${o} ${i} L ${o} ${e} L ${t.x+t.width/2} ${e} L ${t.x+t.width/2} ${t.y+t.height}`,u=o,m=e-13,I=Math.max(I,e+32)}else c=`M ${s} ${i} C ${o} ${i}, ${o} ${d}, ${a.x+a.width} ${d}`,u=s+.75*(o-s),m=(i+d)/2}else if(a.rank-t.rank>1){const e=36+D++*g;c=`M ${s} ${i} L ${s+20} ${i} L ${s+20} ${e} L ${l-20} ${e} L ${l-20} ${d} L ${l} ${d}`,u=(s+l)/2,m=e}else{const e=(b-($.get(f)-1)/2)*g,t=(s+l)/2;c=`M ${s} ${i} C ${t} ${i+e}, ${t} ${d+e}, ${l} ${d}`,u=t,m=(i+d)/2+.75*e,I=Math.max(I,i+e,d+e)}let w=E.format(e.value);n(w,o.fontSize)>p&&(w=new Intl.NumberFormat(E.resolvedOptions().locale,{notation:\"scientific\",maximumSignificantDigits:6}).format(e.value));const y=e.label?r(e.label.replace(/\\s+/g,\" \"),p,h):void 0,v=Math.max(40,n(w,o.fontSize)+14,n(y??\"\",h)+14);return{...e,path:c,labelX:u,labelY:m,labelWidth:v,labelHeight:y?o.fontSize+h+14:o.fontSize+9,valueText:w,labelText:y}}),W=Math.max(...B.map(e=>e.x+e.width),...U.map(e=>e.labelX+e.labelWidth/2+40))+36,O=Math.max(I,...U.map(e=>e.labelY+e.labelHeight/2))+36;return{nodes:B,edges:U,width:W,height:O}}},535(e,t,o){o.d(t,{D:()=>i,p:()=>n});var a=o(886),s=o(439);function n(){return{scale:1,mode:\"manual\",scrollLeft:0,scrollTop:0}}function r(e,t,o={}){const a=e.createElementNS(\"http://www.w3.org/2000/svg\",t);for(const[e,t]of Object.entries(o))a.setAttribute(e,String(t));return a}function i(e,t,o){const n=e.ownerDocument;e.replaceChildren(),e.removeAttribute(\"role\"),e.className=\"process-flow\",e.style.width=`${Math.max(0,o.width)}px`,e.style.height=`${Math.max(0,o.height)}px`;const i=o.settings??(0,s.sb)(),l=o.appearance??(0,s.J4)(i,void 0,o.accent),d=!1!==o.allowInteractions;e.style.setProperty(\"--flow-fg\",l.foreground),e.style.setProperty(\"--flow-bg\",l.background),e.style.setProperty(\"--flow-active\",l.active),e.style.setProperty(\"--flow-font-size\",`${i.fontSize}px`),e.style.setProperty(\"--flow-small-font-size\",`${Math.max(10,i.fontSize-2)}px`),e.style.setProperty(\"--flow-title-font-size\",`${i.fontSize+1}px`),e.dataset.highContrast=String(l.highContrast),e.dataset.interactive=String(d);const c=n.createElement(\"div\");c.className=\"process-flow-summary\",c.setAttribute(\"role\",\"status\"),c.textContent=t.message,e.appendChild(c);for(const o of t.warnings){const t=n.createElement(\"div\");t.className=\"process-flow-warning\",t.setAttribute(\"role\",\"status\"),t.textContent=o,e.appendChild(t)}if(\"ready\"!==t.status){const o=n.createElement(\"div\");o.className=\"process-flow-state\",o.setAttribute(\"role\",\"invalid\"===t.status?\"alert\":\"note\");const a=n.createElement(\"h2\");a.textContent=\"invalid\"===t.status?\"Check your data\":\"Build a process graph\";const s=n.createElement(\"p\");return s.textContent=t.message.includes(\"Assign\")?\"Add text fields to Source and Target, and a numeric column or measure to Value. Optional: Tooltip ID, Node Title, Node Description, Label, and Group.\":\"Check the current filters and field assignments. Each connection needs non-empty text IDs and a finite numeric Value.\",o.append(a,s),void e.appendChild(o)}if(!o.width||!o.height)return;const h=(0,a.R)(t,o.locale,i),p=n.createElement(\"div\");p.className=\"process-flow-viewport\",p.tabIndex=d?0:-1,d||(p.style.overflow=\"hidden\"),p.setAttribute(\"role\",\"region\"),p.setAttribute(\"aria-label\",\"Process graph. Scroll to explore connections beyond the viewport.\");const g=r(n,\"svg\",{width:h.width,height:h.height,viewBox:`0 0 ${h.width} ${h.height}`,role:\"img\",\"aria-label\":t.message,class:\"process-flow-graph\"}),u=r(n,\"defs\"),m=r(n,\"marker\",{id:o.markerId,viewBox:\"0 0 10 10\",refX:9,refY:5,markerWidth:7,markerHeight:7,orient:\"auto\",markerUnits:\"strokeWidth\"});m.appendChild(r(n,\"path\",{d:\"M 0 0 L 10 5 L 0 10 z\",fill:l.edgeColor})),u.appendChild(m),g.appendChild(u);const f=r(n,\"g\",{class:\"process-flow-edges\"}),b=r(n,\"g\",{class:\"process-flow-edge-labels\"});for(const e of h.edges){f.appendChild(r(n,\"path\",{class:\"process-flow-edge\",d:e.path,fill:\"none\",stroke:l.edgeColor,\"stroke-width\":l.highContrast?Math.max(2,i.edgeWidth):i.edgeWidth,\"marker-end\":`url(#${o.markerId})`,\"data-edge-id\":e.id,\"data-source\":e.source,\"data-target\":e.target}));const t=r(n,\"g\",{class:\"process-flow-edge-label\",transform:`translate(${e.labelX},${e.labelY})`});t.appendChild(r(n,\"rect\",{x:-e.labelWidth/2,y:-e.labelHeight/2,width:e.labelWidth,height:e.labelHeight,rx:4,fill:l.background,stroke:l.foreground,\"stroke-width\":l.highContrast?2:.5}));const a=r(n,\"text\",{class:\"process-flow-value\",\"text-anchor\":\"middle\",y:e.labelText?-3:.35*i.fontSize});if(a.textContent=e.valueText,t.appendChild(a),e.labelText){const o=r(n,\"text\",{class:\"process-flow-label\",\"text-anchor\":\"middle\",y:i.fontSize/2+6});o.textContent=e.labelText,t.appendChild(o)}b.appendChild(t)}g.appendChild(f),g.appendChild(b);const w=r(n,\"g\",{class:\"process-flow-nodes\"});for(const e of h.nodes){const t=r(n,\"g\",{class:\"process-flow-node\",transform:`translate(${e.x},${e.y})`,\"data-node-id\":e.id,\"aria-label\":`${e.title} (${e.id})`});t.appendChild(r(n,\"rect\",{width:e.width,height:e.height,rx:7,stroke:l.nodeBorder,fill:l.nodeFill,\"stroke-width\":l.highContrast?Math.max(2,i.nodeBorderWidth):i.nodeBorderWidth}));const o=r(n,\"text\",{\"text-anchor\":\"middle\",class:\"process-flow-node-title\"});if(e.lines.forEach((t,a)=>{const s=r(n,\"tspan\",{x:e.width/2,y:.33*e.height+a*(i.fontSize+4)});s.textContent=t,o.appendChild(s)}),t.appendChild(o),e.title!==e.id){const o=r(n,\"text\",{class:\"process-flow-node-id\",x:e.width/2,y:e.height-10,\"text-anchor\":\"middle\"});o.textContent=e.id.length>20?e.id.slice(0,19)+\"…\":e.id,t.appendChild(o)}w.appendChild(t)}g.appendChild(w),p.appendChild(g),e.appendChild(p);const y=d?o.zoom??{scale:1,mode:\"manual\",scrollLeft:0,scrollTop:0}:{scale:1,mode:\"manual\",scrollLeft:0,scrollTop:0,mode:\"fit\"},v=n.createElement(\"div\");v.className=\"process-flow-zoom\",v.setAttribute(\"role\",\"group\"),v.setAttribute(\"aria-label\",\"Graph zoom controls\");const k=(e,t)=>{const o=n.createElement(\"button\");return o.type=\"button\",o.textContent=e,o.setAttribute(\"aria-label\",t),o.title=t,v.appendChild(o),o},x=k(\"−\",\"Zoom out\"),C=k(\"+\",\"Zoom in\"),S=n.createElement(\"output\");S.className=\"process-flow-zoom-percentage\",S.setAttribute(\"aria-label\",\"Zoom level\"),S.setAttribute(\"aria-live\",\"polite\"),v.appendChild(S);const $=k(\"Fit\",\"Fit graph to view\");d&&e.appendChild(v);const M=()=>({width:p.clientWidth||o.width,height:p.clientHeight||Math.max(1,o.height-(c.offsetHeight||28)-(d?42:0)-44*t.warnings.length)}),A=()=>{const e=M();return Math.max(Number.EPSILON,Math.min(1,(e.width-2)/h.width,(e.height-2)/h.height))},T=(e,t)=>{const o=M(),a=(p.scrollLeft+o.width/2)/y.scale,s=(p.scrollTop+o.height/2)/y.scale;y.scale=e,g.setAttribute(\"width\",String(h.width*e)),g.setAttribute(\"height\",String(h.height*e)),S.textContent=`${Number((100*e).toFixed(e<.01?2:0))}%`,$.setAttribute(\"aria-pressed\",String(\"fit\"===y.mode)),x.disabled=e<=Math.min(.1,A())+Number.EPSILON,C.disabled=e>=4,t&&(y.scrollLeft=Math.max(0,a*e-o.width/2),y.scrollTop=Math.max(0,s*e-o.height/2)),p.scrollLeft=y.scrollLeft,p.scrollTop=y.scrollTop};p.addEventListener(\"scroll\",()=>{y.scrollLeft=p.scrollLeft,y.scrollTop=p.scrollTop}),x.addEventListener(\"click\",()=>{y.mode=\"manual\",T(Math.max(Math.min(.1,A()),y.scale/1.25),!0)}),C.addEventListener(\"click\",()=>{y.mode=\"manual\",T(Math.min(4,1.25*y.scale),!0)}),$.addEventListener(\"click\",()=>{y.mode=\"fit\",y.scrollLeft=0,y.scrollTop=0,g.setAttribute(\"width\",\"1\"),g.setAttribute(\"height\",\"1\"),T(A(),!1)}),\"fit\"===y.mode&&(y.scrollLeft=0,y.scrollTop=0,g.setAttribute(\"width\",\"1\"),g.setAttribute(\"height\",\"1\")),T(\"fit\"===y.mode?A():y.scale,!1)}},49(e,t,o){o.d(t,{R:()=>r});var a=o(22),s=o(535),n=o(439);class r{options;static nextInstance=0;markerId=\"process-flow-arrow-\"+r.nextInstance++;container;result=(0,a.kz)();zoom=(0,s.p)();dataView;settings=(0,n.sb)();constructor(e){this.options=e,this.container=e.element.ownerDocument.createElement(\"div\"),e.element.appendChild(this.container)}update(e){this.options.host.eventService.renderingStarted(e);try{if(2&e.type)this.dataView=e.dataViews?.[0],this.result=(0,a.kz)(this.dataView);else if(e.dataViews?.[0]){const t=e.dataViews[0];this.dataView={...this.dataView,...t,metadata:{...this.dataView?.metadata,...t.metadata},table:t.table??this.dataView?.table},this.result=(0,a.kz)(this.dataView)}this.settings=(0,n.sb)(this.dataView?.metadata.objects);const t=this.options.host.colorPalette.getColor(\"process-flow\").value;(0,s.D)(this.container,this.result,{width:e.viewport.width,height:e.viewport.height,accent:t,markerId:this.markerId,locale:this.options.host.locale,zoom:this.zoom,settings:this.settings,appearance:(0,n.J4)(this.settings,this.options.host.colorPalette,t),allowInteractions:!1!==this.options.host.hostCapabilities?.allowInteractions}),this.options.host.eventService.renderingFinished(e)}catch{this.container.replaceChildren(),this.container.setAttribute(\"role\",\"alert\"),this.container.textContent=\"Unable to display this process graph. Check the assigned fields and filter the data.\",this.options.host.eventService.renderingFailed(e,\"Unable to render process graph.\")}}getFormattingModel(){return(0,n.PD)(this.settings,this.options.host.colorPalette.isHighContrast)}destroy(){this.container.remove()}}},848(e,t,o){o.d(t,{b:()=>s});var a=o(49);class s extends a.R{}},210(e){e.exports=null}};const t={};function o(a){const s=t[a];if(void 0!==s)return s.exports;const n=t[a]={exports:{}};return e[a](n,n.exports,o),n.exports}o.n=e=>{const t=e&&e.__esModule?()=>e.default:()=>e;return o.d(t,{a:t}),t},o.d=(e,t)=>{if(Array.isArray(t))for(var a=0;a<t.length;){var s=t[a++],n=t[a++],r=0===n?{enumerable:!0,value:t[a++]}:{enumerable:!0,get:n};o.o(e,s)||Object.defineProperty(e,s,r)}else for(var s in t)o.o(t,s)&&!o.o(e,s)&&Object.defineProperty(e,s,{enumerable:!0,get:t[s]})},o.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),o.r=e=>{Object.defineProperty(e,Symbol.toStringTag,{value:\"Module\"}),Object.defineProperty(e,\"__esModule\",{value:!0})};let a={};o.r(a);var s=o(848),n=window.powerbi,r={name:\"processFlowBAAAB49BFE6440FCA0A95BC2620753B8_DEBUG\",displayName:\"Process Flow\",class:\"Visual\",apiVersion:\"5.11.0\",create:e=>{if(s.b)return new s.b(e);throw\"Visual instance not found\"},createModalDialog:(e,t,o)=>{const a=globalThis.dialogRegistry;e in a&&new a[e](t,o)},custom:!0};void 0!==n&&(n.visuals=n.visuals||{},n.visuals.plugins=n.visuals.plugins||{},n.visuals.plugins.processFlowBAAAB49BFE6440FCA0A95BC2620753B8_DEBUG=r);const i=r;o.d(a,[\"default\",0,i]),processFlowBAAAB49BFE6440FCA0A95BC2620753B8=a})();",
+    "css": ".process-flow {\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n  box-sizing: border-box;\n  color: var(--flow-fg, #242424);\n  background: var(--flow-bg, #fff);\n  font-family: \"Segoe UI\", Arial, sans-serif;\n  font-size: 13px;\n}\n.process-flow .process-flow-summary,\n.process-flow .process-flow-warning {\n  flex: 0 0 auto;\n  padding: 6px 10px;\n  overflow-wrap: anywhere;\n}\n.process-flow .process-flow-summary {\n  font-weight: 600;\n}\n.process-flow .process-flow-warning {\n  border-left: 3px solid var(--flow-fg);\n}\n.process-flow .process-flow-state {\n  padding: 12px 20px;\n  overflow: auto;\n}\n.process-flow .process-flow-state h2 {\n  margin: 0 0 10px;\n  font-size: 18px;\n}\n.process-flow .process-flow-state p {\n  max-width: 600px;\n  line-height: 1.5;\n}\n.process-flow .process-flow-viewport {\n  flex: 1 1 auto;\n  min-height: 0;\n  overflow: auto;\n}\n.process-flow .process-flow-graph {\n  display: block;\n}\n.process-flow .process-flow-zoom {\n  display: flex;\n  flex: 0 0 42px;\n  align-items: center;\n  gap: 4px;\n  padding: 0 8px;\n  box-sizing: border-box;\n  border-top: 1px solid var(--flow-fg);\n  background: var(--flow-bg);\n}\n.process-flow .process-flow-zoom button {\n  min-width: 30px;\n  height: 28px;\n  border: 1px solid var(--flow-fg);\n  border-radius: 4px;\n  color: inherit;\n  background: var(--flow-bg);\n  font: inherit;\n  cursor: pointer;\n}\n.process-flow .process-flow-zoom button:hover {\n  outline: 1px solid var(--flow-active);\n}\n.process-flow .process-flow-zoom button:focus-visible {\n  outline: 2px solid var(--flow-active);\n  outline-offset: 1px;\n}\n.process-flow .process-flow-zoom button:disabled {\n  opacity: 0.4;\n  cursor: default;\n}\n.process-flow .process-flow-zoom button[aria-pressed=\"true\"] {\n  border: 2px solid var(--flow-active);\n}\n.process-flow .process-flow-zoom-percentage {\n  min-width: 48px;\n  text-align: center;\n  font-variant-numeric: tabular-nums;\n}\n.process-flow .process-flow-node-title {\n  fill: var(--flow-fg);\n  font-size: var(--flow-title-font-size);\n  font-weight: 600;\n}\n.process-flow .process-flow-node-id {\n  fill: var(--flow-fg);\n  font-size: var(--flow-small-font-size);\n}\n.process-flow .process-flow-value {\n  fill: var(--flow-fg);\n  font-size: var(--flow-font-size);\n  font-weight: 600;\n}\n.process-flow .process-flow-label {\n  fill: var(--flow-fg);\n  font-size: var(--flow-small-font-size);\n}\n\n",
+    "iconBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2RpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpBOEJGMzkxN0NBRDNFMDExQTcxQ0JFODI3ODBCQUE5RSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo3NEY1QjA1NUQ0OTAxMUUwQTgxREI2NjMxMkNEMUNEMyIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo3NEY1QjA1NEQ0OTAxMUUwQTgxREI2NjMxMkNEMUNEMyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IFdpbmRvd3MiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5Mjk5RDU1ODBGRDRFMDExQTcxQ0JFODI3ODBCQUE5RSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpBOEJGMzkxN0NBRDNFMDExQTcxQ0JFODI3ODBCQUE5RSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PpDoNX0AAAI3SURBVHjarJRLSFVRFIY9t7SiRDGLoEEPCRJRaCSYkxCiFCXCF+LIMExQLkilgumgwkbdBuWDRC2EomhURCOjgagkXEgKLUKhidobM6H0+i34rxyPnuvEA5/rXPda/1l7739vJxKJxG3ls93+hEKhTILxJhgMftmsiPxdhHw4CfepeR8dCyjWwwB0kZy3iVgCoQ2ewnmXxhrBD7Cgr/ZQVA17fDRPw2UYhzK6G99IsBse6/0QNME+H8FT4EA/YiPqOgA1q4IMzBNuw6iKjkCpj+Av+AdnEEmD3bxfhzvuDk30HaEaLsEkXCO53rN+Bwg5qsvTuj/TjGYtx9nINhRmEx7AYWiFW7AXOuEcbPOUvIZ2mnrl+PkQUbNEh4QHNKUSDdsSBWEOlmxTEfvs26FL9Khe211if6Acgee+xo7xzMgBxfq9qPe3fgWBGN2lEnqtG9nExM7CV3jp3bDos2bKJB0nHFRxAxRpA/5CIXyHh5ABv6GZqd9dJ6iz2SjbxMMypGhJFtTlNzu3kK7xgDxpove8U66FK2A+s6nul5gVVMEL+Ak7lG/T+g9JcIOGar2CRUoogxMwpP/bLTJMB9bRhDbkk5bBUU0y3ES0xS04CBfN9RSHiY90vJK0BHaSzG9h2eejS3RJeVfdtrGzuGyd8CX7Yq6ExuCH63jaVMPkFOv6OibB6DKs2+VEQp+WYBoqERn2sVWWRNN0YurIfeL14U6YkpkLYCSG6e0yqdCxvKBLIm5FgAEAV0nKuwMYRUsAAAAASUVORK5CYII="
+  },
+  "visualEntryPoint": "",
+  "externalJS": [],
+  "assets": {
+    "icon": "assets/icon.png"
+  }
+}

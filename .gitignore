@@ -1,6 +1,9 @@
 # Dependencies restored with npm ci
 node_modules/
 
+# Local instructions, checklists, and notes
+/.local/
+
 # Power BI visual build output and packages
 .tmp/
 dist/
