@@ -1,9 +1,52 @@
-p {
-    font-size: 20px;
-    font-weight: bold;
-    em {
-        background: yellow;
-        padding: 5px;
+.process-flow {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+    color: #242424;
+    background: #fff;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 13px;
 
+    .process-flow-summary, .process-flow-warning {
+        flex: 0 0 auto;
+        padding: 6px 10px;
+        overflow-wrap: anywhere;
     }
+
+    .process-flow-summary { font-weight: 600; }
+    .process-flow-warning { color: #694700; background: #fff4ce; }
+    .process-flow-viewport { flex: 1 1 auto; min-height: 0; overflow: auto; }
+    .process-flow-graph { display: block; }
+    .process-flow-zoom {
+        display: flex;
+        flex: 0 0 42px;
+        align-items: center;
+        gap: 4px;
+        padding: 0 8px;
+        box-sizing: border-box;
+        border-top: 1px solid #e1e1e1;
+        background: #fff;
+    }
+    .process-flow-zoom button {
+        min-width: 30px;
+        height: 28px;
+        border: 1px solid #c8c8c8;
+        border-radius: 4px;
+        color: inherit;
+        background: #fff;
+        font: inherit;
+        cursor: pointer;
+    }
+    .process-flow-zoom button:hover { background: #f0f0f0; }
+    .process-flow-zoom button:focus-visible { outline: 2px solid #1670a5; outline-offset: 1px; }
+    .process-flow-zoom button:disabled { opacity: 0.4; cursor: default; }
+    .process-flow-zoom button[aria-pressed="true"] { background: #e8f1fa; }
+    .process-flow-zoom-percentage { min-width: 48px; text-align: center; font-variant-numeric: tabular-nums; }
+    .process-flow-node rect { fill: #fff; }
+    .process-flow-node-title { fill: #242424; font-size: 14px; font-weight: 600; }
+    .process-flow-node-id { fill: #616161; font-size: 11px; }
+    .process-flow-edge-label rect { fill: #fff; stroke: #e1e1e1; stroke-width: 0.7; }
+    .process-flow-value { fill: #242424; font-size: 13px; font-weight: 600; }
+    .process-flow-label { fill: #616161; font-size: 11px; }
 }

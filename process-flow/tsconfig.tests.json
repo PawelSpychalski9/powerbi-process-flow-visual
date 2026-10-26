@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "lib": ["ES2022", "DOM"],
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "outDir": ".tmp/tests",
+    "rootDir": "src"
+  },
+  "include": ["src/graph.ts", "src/layout.ts", "src/renderer.ts", "src/view.ts"]
+}

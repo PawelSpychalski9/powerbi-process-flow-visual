@@ -15,7 +15,11 @@
     "pbiviz": "pbiviz",
     "start": "pbiviz start",
     "package": "pbiviz package",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "tsc -p tsconfig.tests.json && node --test tests/*.test.cjs",
+    "preview": "tsc -p tsconfig.tests.json && node tests/preview.cjs",
+    "test:browser": "npm run preview && node tests/browser-zoom.cjs"
   },
   "dependencies": {
     "@types/d3": "7.4.3",
@@ -25,8 +29,10 @@
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.8.0",
+    "ajv": "6.15.0",
     "eslint": "^9.11.1",
     "eslint-plugin-powerbi-visuals": "^1.0.0",
+    "jsdom": "26.1.0",
     "powerbi-visuals-tools": "7.2.1",
     "typescript": "5.9.3"
   }

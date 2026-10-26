@@ -1,79 +1,169 @@
 {
-    "dataRoles": [
+  "dataRoles": [
+    {
+      "name": "source",
+      "displayName": "Source",
+      "kind": "Grouping",
+      "requiredTypes": [
         {
-            "displayName": "Category Data",
-            "name": "category",
-            "kind": "Grouping"
-        },
-        {
-            "displayName": "Measure Data",
-            "name": "measure",
-            "kind": "Measure"
+          "text": true
         }
-    ],
-    "objects": {
-        "dataPoint": {
-            "properties": {
-                "defaultColor": {
-                    "type": {
-                        "fill": {
-                            "solid": {
-                                "color": true
-                            }
-                        }
-                    }
-                },
-                "showAllDataPoints": {
-                    "type": {
-                        "bool": true
-                    }
-                },
-                "fill": {
-                    "type": {
-                        "fill": {
-                            "solid": {
-                                "color": true
-                            }
-                        }
-                    }
-                },
-                "fillRule": {
-                    "type": {
-                        "fill": {}
-                    }
-                },
-                 "fontSize": {
-                    "type": {
-                        "formatting": {
-                            "fontSize": true
-                        }
-                    }
-                }
-            }
-        }
+      ]
     },
-    "dataViewMappings": [
+    {
+      "name": "target",
+      "displayName": "Target",
+      "kind": "Grouping",
+      "requiredTypes": [
         {
-            "categorical": {
-                "categories": {
-                    "for": {
-                        "in": "category"
-                    },
-                    "dataReductionAlgorithm": {
-                        "top": {}
-                    }
-                },
-                "values": {
-                    "select": [
-                        {
-                            "bind": {
-                                "to": "measure"
-                            }
-                        }
-                    ]
-                }
-            }
+          "text": true
         }
-    ],
-    "privileges": []
+      ]
+    },
+    {
+      "name": "value",
+      "displayName": "Value",
+      "kind": "Measure",
+      "requiredTypes": [
+        {
+          "numeric": true
+        }
+      ]
+    },
+    {
+      "name": "tooltipId",
+      "displayName": "Tooltip ID",
+      "kind": "Grouping",
+      "requiredTypes": [
+        {
+          "text": true
+        }
+      ]
+    },
+    {
+      "name": "nodeTitle",
+      "displayName": "Node Title",
+      "kind": "Grouping",
+      "requiredTypes": [
+        {
+          "text": true
+        }
+      ]
+    },
+    {
+      "name": "nodeDescription",
+      "displayName": "Node Description",
+      "kind": "Grouping",
+      "requiredTypes": [
+        {
+          "text": true
+        }
+      ]
+    },
+    {
+      "name": "label",
+      "displayName": "Label",
+      "kind": "Grouping",
+      "requiredTypes": [
+        {
+          "text": true
+        }
+      ]
+    },
+    {
+      "name": "group",
+      "displayName": "Group",
+      "kind": "Grouping",
+      "requiredTypes": [
+        {
+          "text": true
+        }
+      ]
+    }
+  ],
+  "dataViewMappings": [
+    {
+      "conditions": [
+        {
+          "source": {
+            "max": 1
+          },
+          "target": {
+            "max": 1
+          },
+          "value": {
+            "max": 1
+          },
+          "tooltipId": {
+            "max": 1
+          },
+          "nodeTitle": {
+            "max": 1
+          },
+          "nodeDescription": {
+            "max": 1
+          },
+          "label": {
+            "max": 1
+          },
+          "group": {
+            "max": 1
+          }
+        }
+      ],
+      "table": {
+        "rows": {
+          "select": [
+            {
+              "for": {
+                "in": "source"
+              }
+            },
+            {
+              "for": {
+                "in": "target"
+              }
+            },
+            {
+              "for": {
+                "in": "value"
+              }
+            },
+            {
+              "for": {
+                "in": "tooltipId"
+              }
+            },
+            {
+              "for": {
+                "in": "nodeTitle"
+              }
+            },
+            {
+              "for": {
+                "in": "nodeDescription"
+              }
+            },
+            {
+              "for": {
+                "in": "label"
+              }
+            },
+            {
+              "for": {
+                "in": "group"
+              }
+            }
+          ],
+          "dataReductionAlgorithm": {
+            "top": {
+              "count": 1001
+            }
+          }
+        }
+      }
+    }
+  ],
+  "objects": {},
+  "privileges": []
 }
