@@ -1,5 +1,6 @@
 import { Graph, GraphEdge, GraphNode } from "./graph";
 import { GraphSettings, readSettings } from "./formatting";
+import { layoutCompoundGraph } from "./compoundLayout";
 
 export interface PositionedNode extends GraphNode {
     x: number;
@@ -25,6 +26,17 @@ export interface GraphLayout {
     edges: PositionedEdge[];
     width: number;
     height: number;
+    groups?: PositionedGroup[];
+}
+
+export interface PositionedGroup {
+    id: string;
+    title: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    nodeIds: string[];
 }
 
 const NODE_WIDTH = 156;
@@ -112,6 +124,11 @@ function components(graph: Graph): string[][] {
 
 /** Rank the acyclic component graph; nodes inside a cycle share a column. */
 export function layoutGraph(graph: Graph, locale = "en-US", settings: GraphSettings = readSettings()): GraphLayout {
+    if (graph.nodes.some(node => node.flowGroup)) return layoutCompoundGraph(graph, locale, settings, layoutFlatGraph);
+    return layoutFlatGraph(graph, locale, settings);
+}
+
+export function layoutFlatGraph(graph: Graph, locale = "en-US", settings: GraphSettings = readSettings()): GraphLayout {
     if (!graph.nodes.length) return { nodes: [], edges: [], width: 0, height: 0 };
     const nodeWidth = Math.max(NODE_WIDTH, (settings.fontSize + 1) * 11.2);
     const nodeHeight = Math.max(NODE_HEIGHT, (settings.fontSize + 1) * 4.8);

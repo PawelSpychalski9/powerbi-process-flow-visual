@@ -1,6 +1,6 @@
 # M03 — Formatting and usability
 
-The visual exposes five cards in Power BI's Format pane. Settings are stored in
+M03 introduced five cards; M3A adds the sixth, **Flow Groups**. Settings are stored in
 the visual's report metadata and are read on each host update. The native API
 formatting model supplies stable property descriptors and reset-to-default
 descriptors. The SDK/API versions and visual GUID are unchanged.
@@ -12,6 +12,7 @@ descriptors. The SDK/API versions and visual GUID are unchanged.
 | Labels and values | Font size, automatic number precision, decimal places, thousands separator | 13 px; automatic precision; grouping enabled |
 | Spacing | Horizontal and vertical spacing | 180 px and 76 px |
 | Canvas | Theme colors, background and text colors | Theme enabled |
+| Flow Groups | Background visibility, theme/custom colors, opacity, border, corner radius, padding, title | Theme enabled; 8% background opacity; 24 px padding |
 
 Disable the relevant **Use theme colors** switch to edit its custom colors.
 Disable **Automatic number precision** to choose 0–8 decimal places. Formatting
@@ -56,7 +57,7 @@ visual. Use the existing sample report or follow [the baseline checklist](valida
 
 1. **Before:** confirm the default sample still has eight nodes, nine edges, and
    B → C = -18. Check the previously accepted zoom/Fit controls.
-2. Open **Format visual** and confirm the five cards listed above appear.
+2. Open **Format visual** and confirm the six cards listed above appear.
 3. Under Nodes, disable Use theme colors, set a light fill and dark border, and
    change border width from 1.6 to 3. Verify the actual nodes change.
 4. Under Connections, disable Use theme color, set a different color, and increase

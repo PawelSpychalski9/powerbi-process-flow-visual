@@ -79,6 +79,16 @@
           "text": true
         }
       ]
+    },
+    {
+      "name": "flowGroup",
+      "displayName": "Flow Group",
+      "kind": "Grouping",
+      "requiredTypes": [
+        {
+          "text": true
+        }
+      ]
     }
   ],
   "dataViewMappings": [
@@ -107,6 +117,9 @@
             "max": 1
           },
           "group": {
+            "max": 1
+          },
+          "flowGroup": {
             "max": 1
           }
         }
@@ -152,6 +165,11 @@
             {
               "for": {
                 "in": "group"
+              }
+            },
+            {
+              "for": {
+                "in": "flowGroup"
               }
             }
           ],
@@ -277,6 +295,74 @@
           }
         },
         "textColor": {
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "flowGroups": {
+      "properties": {
+        "useTheme": {
+          "type": {
+            "bool": true
+          }
+        },
+        "showBackground": {
+          "type": {
+            "bool": true
+          }
+        },
+        "background": {
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "opacity": {
+          "type": {
+            "numeric": true
+          }
+        },
+        "border": {
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "borderWidth": {
+          "type": {
+            "numeric": true
+          }
+        },
+        "radius": {
+          "type": {
+            "numeric": true
+          }
+        },
+        "padding": {
+          "type": {
+            "numeric": true
+          }
+        },
+        "titleSize": {
+          "type": {
+            "formatting": {
+              "fontSize": true
+            }
+          }
+        },
+        "titleColor": {
           "type": {
             "fill": {
               "solid": {

@@ -1,5 +1,5 @@
 import { GraphResult } from "./graph";
-import { layoutGraph } from "./layout";
+import { layoutGraph, shorten } from "./layout";
 import { Appearance, GraphSettings, readSettings, resolveAppearance } from "./formatting";
 
 export interface RenderOptions {
@@ -71,7 +71,7 @@ export function renderGraph(container: HTMLElement, result: GraphResult, options
         heading.textContent = result.status === "invalid" ? "Check your data" : "Build a process graph";
         const help = document.createElement("p");
         help.textContent = result.message.includes("Assign") ?
-            "Add text fields to Source and Target, and a numeric column or measure to Value. Optional: Tooltip ID, Node Title, Node Description, Label, and Group." :
+            "Add text fields to Source and Target, and a numeric column or measure to Value. Optional: Tooltip ID, Node Title, Node Description, Label, Group, and Flow Group." :
             "Check the current filters and field assignments. Each connection needs non-empty text IDs and a finite numeric Value.";
         state.append(heading, help);
         container.appendChild(state);
@@ -98,6 +98,31 @@ export function renderGraph(container: HTMLElement, result: GraphResult, options
     marker.appendChild(svgElement(document, "path", { d: "M 0 0 L 10 5 L 0 10 z", fill: appearance.edgeColor }));
     defs.appendChild(marker);
     svg.appendChild(defs);
+
+    if (layout.groups?.length) {
+        const containers = svgElement(document, "g", { class: "process-flow-groups" });
+        for (const group of layout.groups) {
+            const container = svgElement(document, "g", {
+                class: "process-flow-group", "data-flow-group": group.id, role: "group", "aria-label": `Flow group ${group.title}`
+            });
+            container.appendChild(svgElement(document, "rect", {
+                x: group.x, y: group.y, width: group.width, height: group.height, rx: settings.flowGroupRadius,
+                fill: appearance.groupBackground,
+                "fill-opacity": settings.flowGroupShowBackground ? (appearance.highContrast ? 1 : settings.flowGroupOpacity / 100) : 0,
+                stroke: appearance.groupBorder,
+                "stroke-width": appearance.highContrast ? Math.max(2, settings.flowGroupBorderWidth) : settings.flowGroupBorderWidth
+            }));
+            const title = svgElement(document, "text", {
+                class: "process-flow-group-title", x: group.x + settings.flowGroupPadding,
+                y: group.y + settings.flowGroupPadding + settings.flowGroupTitleSize,
+                fill: appearance.groupTitle, "font-size": settings.flowGroupTitleSize, "font-weight": 600
+            });
+            title.textContent = shorten(group.title.replace(/\s+/g, " "), Math.max(2, Math.floor((group.width - settings.flowGroupPadding * 2) / settings.flowGroupTitleSize)));
+            container.appendChild(title);
+            containers.appendChild(container);
+        }
+        svg.appendChild(containers);
+    }
 
     const paths = svgElement(document, "g", { class: "process-flow-edges" });
     const labels = svgElement(document, "g", { class: "process-flow-edge-labels" });

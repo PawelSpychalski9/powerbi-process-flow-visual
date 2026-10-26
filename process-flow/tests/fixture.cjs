@@ -10,11 +10,11 @@ function dataView(rows, selectedRoles = roles) {
 function sample() {
     // This fixture contains no quoted commas; reject changes requiring a full CSV parser.
     const lines = fs.readFileSync(path.join(__dirname, '../../example_data/example_data.csv'), 'utf8').trim().split(/\r?\n/);
-    const expected = ['Source', 'Target', 'Value', 'Tooltip ID', 'Node Title', 'Node Description', 'Label', 'Group'];
+    const expected = ['Source', 'Target', 'Value', 'Tooltip ID', 'Node Title', 'Node Description', 'Label', 'Group', 'Flow Group'];
     if (JSON.stringify(lines.shift().split(',')) !== JSON.stringify(expected)) throw new Error('Unexpected sample header');
     const rows = lines.map(line => {
         const row = line.split(',');
-        if (row.length !== 8 || line.includes('"')) throw new Error('Unsupported fixture CSV syntax');
+        if (row.length !== 9 || line.includes('"')) throw new Error('Unsupported fixture CSV syntax');
         row[2] = Number(row[2]);
         if (!Number.isFinite(row[2])) throw new Error('Non-finite sample value');
         return row;

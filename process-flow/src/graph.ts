@@ -1,6 +1,6 @@
 import type powerbi from "powerbi-visuals-api";
 
-export const roles = ["source", "target", "value", "tooltipId", "nodeTitle", "nodeDescription", "label", "group"] as const;
+export const roles = ["source", "target", "value", "tooltipId", "nodeTitle", "nodeDescription", "label", "group", "flowGroup"] as const;
 export type Role = typeof roles[number];
 export const MAX_EDGES = 1000;
 export const MAX_NODES = 500;
@@ -9,6 +9,7 @@ export interface GraphNode {
     id: string;
     title: string;
     description?: string;
+    flowGroup?: string;
 }
 
 export interface GraphEdge {
@@ -66,6 +67,7 @@ export function parseGraph(dataView?: powerbi.DataView): GraphResult {
     const nodes = new Map<string, GraphNode>();
     const titles = new Map<string, Set<string>>();
     const descriptions = new Map<string, Set<string>>();
+    const memberships = new Map<string, Set<string>>();
     const tooltipIds = new Set<string>();
     const warnings = new Set<string>();
     const edgeOccurrences = new Map<string, number>();
@@ -83,6 +85,13 @@ export function parseGraph(dataView?: powerbi.DataView): GraphResult {
         }
         for (const id of [source, target]) {
             if (!nodes.has(id)) nodes.set(id, { id, title: id });
+        }
+        if (columns.has("flowGroup")) {
+            const rawGroup = get("flowGroup");
+            if (rawGroup != null && typeof rawGroup !== "string") warnings.add("Non-text Flow Group values were treated as ungrouped. Assign a Text field to Flow Group.");
+            const membership = typeof rawGroup === "string" ? rawGroup.trim() : "";
+            if (!memberships.has(source)) memberships.set(source, new Set());
+            memberships.get(source)!.add(membership);
         }
         for (const [role, candidates] of [["nodeTitle", titles], ["nodeDescription", descriptions]] as const) {
             const content = text(get(role));
@@ -107,6 +116,9 @@ export function parseGraph(dataView?: powerbi.DataView): GraphResult {
         return { ...base, edges: [], status: "invalid", message: `This graph exceeds ${MAX_NODES} nodes. Filter the report to a smaller graph.` };
     }
     for (const node of nodes.values()) {
+        const assignedGroups = [...(memberships.get(node.id) ?? [])];
+        if (assignedGroups.length === 1 && assignedGroups[0]) node.flowGroup = assignedGroups[0];
+        if (assignedGroups.length > 1) warnings.add(`Conflicting Flow Group assignments for node ${node.id}. The node remains ungrouped; make all Source rows agree.`);
         const nodeTitles = [...(titles.get(node.id) ?? [])].sort(compare);
         const nodeDescriptions = [...(descriptions.get(node.id) ?? [])].sort(compare);
         node.title = nodeTitles[0] ?? node.id;
