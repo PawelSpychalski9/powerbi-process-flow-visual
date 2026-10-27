@@ -7,8 +7,10 @@ theme-aware formatting, high contrast, and zoom/Fit controls. The optional
 `Flow Group` field encloses Source nodes in titled, configurable containers;
 without it the original graph layout is preserved. Edge hover supports native
 tooltips and passes row identities to author-configured report-page tooltips.
-Selection interactions remain a later milestone. Report-page detail filtering
-requires the semantic-model relationship and manual Power BI validation below.
+Click edges to select their rows, use Ctrl-click for multiple selections, or click
+a node to select its visible incident connections. Native context menus and host
+selection restoration are supported. Cross-visual behavior and report-page detail
+filtering require the semantic model and manual Power BI validation below.
 
 ## Repository structure
 
@@ -78,3 +80,5 @@ See [Flow Groups](process-flow/docs/flow-groups.md) for membership rules, layout
 formatting, limitations, and Power BI Desktop validation.
 See [edge tooltips and related details](process-flow/docs/tooltips.md) for the
 sample detail table, relationship setup, and report-page tooltip checks.
+See [report interactions](process-flow/docs/interactions.md) for selection behavior,
+cross-filter tests, context menus, and the table-mapping highlight limitation.

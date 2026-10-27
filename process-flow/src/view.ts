@@ -3,6 +3,7 @@ import { parseGraph, GraphResult } from "./graph";
 import { createZoomState, renderGraph } from "./renderer";
 import { buildFormattingModel, readSettings, resolveAppearance } from "./formatting";
 import { bindEdgeTooltips, edgeIdentities } from "./tooltips";
+import { GraphInteractions } from "./interactions";
 
 /** Host lifecycle kept separate from the stylesheet entry point for DOM tests. */
 export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
@@ -14,10 +15,12 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
     private dataView?: powerbi.DataView;
     private settings = readSettings();
     private disposeTooltips: () => void = () => undefined;
+    private readonly interactions: GraphInteractions;
 
     constructor(private readonly options: powerbi.extensibility.visual.VisualConstructorOptions) {
         this.container = options.element.ownerDocument.createElement("div");
         options.element.appendChild(this.container);
+        this.interactions = new GraphInteractions(this.container, options.host.createSelectionManager?.());
     }
 
     public update(options: powerbi.extensibility.visual.VisualUpdateOptions): void {
@@ -47,8 +50,10 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
                 appearance: resolveAppearance(this.settings, this.options.host.colorPalette, accent),
                 allowInteractions: this.options.host.hostCapabilities?.allowInteractions !== false
             });
+            const identities = edgeIdentities(this.options.host, this.dataView?.table, this.result.edges);
             this.disposeTooltips = bindEdgeTooltips(this.container, this.options.host.tooltipService,
-                this.result.edges, edgeIdentities(this.options.host, this.dataView?.table, this.result.edges), this.options.host.locale);
+                this.result.edges, identities, this.options.host.locale);
+            this.interactions.update(this.result.edges, identities, this.options.host.hostCapabilities?.allowInteractions !== false);
             this.options.host.eventService.renderingFinished(options);
         } catch {
             this.container.replaceChildren();
@@ -64,6 +69,7 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
 
     public destroy(): void {
         this.disposeTooltips();
+        this.interactions.destroy();
         this.container.remove();
     }
 }
