@@ -1,6 +1,7 @@
 import type { Graph, GraphEdge } from "./graph";
 import type { GraphSettings } from "./formatting";
 import type { GraphLayout, PositionedEdge, PositionedGroup, PositionedNode } from "./layout";
+import { stylePolyline } from "./routing";
 
 type FlatLayout = (graph: Graph, locale: string, settings: GraphSettings) => GraphLayout;
 interface Block {
@@ -20,7 +21,7 @@ const MARGIN = 36;
 const ROAD_STEP = 8;
 const compare = (a: string, b: string): number => a < b ? -1 : a > b ? 1 : 0;
 
-/** The flat renderer emits absolute M/L/C commands only; translate their coordinate pairs. */
+/** The renderer emits absolute M/L/C/Q commands only; translate their coordinate pairs. */
 function translatePath(path: string, dx: number, dy: number): string {
     let index = 0;
     return path.replace(/[-+]?(?:\d*\.)?\d+(?:e[-+]?\d+)?/gi,
@@ -151,7 +152,7 @@ export function layoutCompoundGraph(graph: Graph, locale: string, settings: Grap
             path = `M ${startX} ${startY} L ${startX + 8} ${startY} L ${startX + 8} ${exitY} L ${exitX} ${exitY} L ${exitX} ${labelY} L ${entryX} ${labelY} L ${entryX} ${entryY} L ${endX - 8} ${entryY} L ${endX - 8} ${endY} L ${endX} ${endY}`;
         }
         usedLabels.push({ x: labelX, y: labelY, width: formatted.labelWidth, height: formatted.labelHeight });
-        edges.push({ ...formatted, path, labelX, labelY });
+        edges.push({ ...formatted, path: stylePolyline(path, settings.orthogonalEdges), labelX, labelY });
     }
     const width = Math.max(...blocks.map(block => block.x + block.width + outgoing[block.rank] * ROAD_STEP + 24),
         ...edges.map(edge => edge.labelX + edge.labelWidth / 2)) + MARGIN;

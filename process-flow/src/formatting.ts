@@ -8,6 +8,7 @@ export interface GraphSettings {
     edgeUseTheme: boolean;
     edgeColor: string;
     edgeWidth: number;
+    orthogonalEdges: boolean;
     fontSize: number;
     automaticValues: boolean;
     decimalPlaces: number;
@@ -46,7 +47,8 @@ export const formattingCards: { name: string; label: string; settings: Definitio
     { name: "edges", label: "Connections", settings: [
         { key: "edgeUseTheme", property: "useTheme", label: "Use theme color", kind: "boolean", fallback: true },
         { key: "edgeColor", property: "color", label: "Color", kind: "color", fallback: "#1670a5" },
-        { key: "edgeWidth", property: "width", label: "Line width", kind: "number", fallback: 1.8, min: 0.5, max: 6 }
+        { key: "edgeWidth", property: "width", label: "Line width", kind: "number", fallback: 1.8, min: 0.5, max: 6 },
+        { key: "orthogonalEdges", property: "rightAngles", label: "Right-angle connections", kind: "boolean", fallback: false }
     ] },
     { name: "labels", label: "Labels and values", settings: [
         { key: "fontSize", property: "fontSize", label: "Font size", kind: "number", fallback: 13, min: 10, max: 24, integer: true },

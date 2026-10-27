@@ -169,6 +169,15 @@ async function main() {
         assert.equal(await evaluate('document.querySelector("[role=alert]") !== null'),true);
         await evaluate('window.setPreviewState("ready")');
         assert.equal(await evaluate('document.querySelectorAll(".process-flow-node").length'),8);
+        await evaluate('window.setPreviewObjects({edges:{rightAngles:true}})');
+        const angularPaths=await evaluate('[...document.querySelectorAll(".process-flow-edge")].map(edge=>edge.getAttribute("d"))');
+        assert.ok(angularPaths.every(path=>!/[CQ]/.test(path)));
+        assert.equal(await evaluate('document.querySelectorAll(".process-flow-group").length'),2);
+        const angularScreenshot=await command('Page.captureScreenshot');
+        fs.writeFileSync('.tmp/right-angle-connections.png',Buffer.from(angularScreenshot.data,'base64'));
+        await evaluate('window.setPreviewObjects({edges:{rightAngles:false}})');
+        const smoothPaths=await evaluate('[...document.querySelectorAll(".process-flow-edge")].map(edge=>edge.getAttribute("d"))');
+        assert.ok(smoothPaths.some(path=>/[CQ]/.test(path)));
         console.log('Browser checks passed: Flow Groups, zoom, Fit, resizing, formatting, theme changes, high contrast, disabled interactions, empty/error states, and recovery.');
     } finally {
         if (command && socket?.readyState === WebSocket.OPEN) await command('Browser.close').catch(() => {});

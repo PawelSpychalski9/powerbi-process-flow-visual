@@ -235,6 +235,11 @@
           "type": {
             "numeric": true
           }
+        },
+        "rightAngles": {
+          "type": {
+            "bool": true
+          }
         }
       }
     },
