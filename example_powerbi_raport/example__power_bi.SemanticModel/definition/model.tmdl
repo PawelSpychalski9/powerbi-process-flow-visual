@@ -1,0 +1,19 @@
+model Model
+	culture: pl-PL
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: pl-PL
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["example_data"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table example_data
+
+ref cultureInfo pl-PL
+

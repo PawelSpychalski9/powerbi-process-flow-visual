@@ -1,0 +1,80 @@
+table example_data
+	lineageTag: a850e121-1b0b-464f-9fc8-91e67b93ec7e
+
+	column Source
+		dataType: string
+		lineageTag: c87d6627-c655-49a3-80c0-9f65ad00a863
+		summarizeBy: none
+		sourceColumn: Source
+
+		annotation SummarizationSetBy = Automatic
+
+	column Target
+		dataType: string
+		lineageTag: bf092096-7fe3-48cb-a0b9-a1971f9bb2cf
+		summarizeBy: none
+		sourceColumn: Target
+
+		annotation SummarizationSetBy = Automatic
+
+	column Value
+		dataType: int64
+		formatString: 0
+		lineageTag: 18d0495d-6561-4f3a-95a7-66367c8f2b20
+		summarizeBy: sum
+		sourceColumn: Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tooltip ID'
+		dataType: string
+		lineageTag: bb3fc0a2-524c-4895-a44c-345b2ad460ca
+		summarizeBy: none
+		sourceColumn: Tooltip ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Node Title'
+		dataType: string
+		lineageTag: 085b2e52-e859-4d08-8cae-fa1838ee1c7c
+		summarizeBy: none
+		sourceColumn: Node Title
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Node Description'
+		dataType: string
+		lineageTag: 073bd26f-e233-4915-b95a-aee1ade7b794
+		summarizeBy: none
+		sourceColumn: Node Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column Label
+		dataType: string
+		lineageTag: 0e98b72f-3e14-4e1d-960f-27a07b9c0086
+		summarizeBy: none
+		sourceColumn: Label
+
+		annotation SummarizationSetBy = Automatic
+
+	column Group
+		dataType: string
+		lineageTag: 1c123de5-7bd4-4673-999c-7cc8f396faeb
+		summarizeBy: none
+		sourceColumn: Group
+
+		annotation SummarizationSetBy = Automatic
+
+	partition example_data = m
+		mode: import
+		source =
+				let
+				    Źródło = Csv.Document(File.Contents("C:\Users\Pawel\Desktop\open-source\repos\powerbi-process-flow-visual\example_data\example_data.csv"),[Delimiter=",", Columns=8, Encoding=1250, QuoteStyle=QuoteStyle.None]),
+				    #"Nagłówki o podwyższonym poziomie" = Table.PromoteHeaders(Źródło, [PromoteAllScalars=true]),
+				    #"Zmieniono typ" = Table.TransformColumnTypes(#"Nagłówki o podwyższonym poziomie",{{"Source", type text}, {"Target", type text}, {"Value", Int64.Type}, {"Tooltip ID", type text}, {"Node Title", type text}, {"Node Description", type text}, {"Label", type text}, {"Group", type text}})
+				in
+				    #"Zmieniono typ"
+
+	annotation PBI_ResultType = Table
+
