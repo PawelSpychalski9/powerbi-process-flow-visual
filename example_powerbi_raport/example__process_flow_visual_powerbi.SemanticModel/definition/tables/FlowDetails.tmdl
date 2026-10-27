@@ -1,0 +1,48 @@
+table FlowDetails
+	lineageTag: c19a1ea8-d67f-4760-a54a-15ee714aeafc
+
+	column 'Tooltip ID'
+		dataType: string
+		lineageTag: b1f07427-71ce-40a5-8e3c-caf4a189d6dd
+		summarizeBy: none
+		sourceColumn: Tooltip ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Detail ID'
+		dataType: string
+		lineageTag: aa6d00c2-2d02-4b6c-831a-5b2a01492d15
+		summarizeBy: none
+		sourceColumn: Detail ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		lineageTag: 634876c6-cd4b-44f3-80da-1b32ecc76285
+		summarizeBy: none
+		sourceColumn: Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column Amount
+		dataType: int64
+		formatString: 0
+		lineageTag: 9c352c0a-74b4-458d-9c01-410cbb085fd5
+		summarizeBy: sum
+		sourceColumn: Amount
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FlowDetails = m
+		mode: import
+		source =
+				let
+				    Źródło = Csv.Document(File.Contents("C:\Users\Pawel\Desktop\open-source\repos\powerbi-process-flow-visual\example_data\FlowDetails.csv"),[Delimiter=",", Columns=4, Encoding=1250, QuoteStyle=QuoteStyle.None]),
+				    #"Nagłówki o podwyższonym poziomie" = Table.PromoteHeaders(Źródło, [PromoteAllScalars=true]),
+				    #"Zmieniono typ" = Table.TransformColumnTypes(#"Nagłówki o podwyższonym poziomie",{{"Tooltip ID", type text}, {"Detail ID", type text}, {"Description", type text}, {"Amount", Int64.Type}})
+				in
+				    #"Zmieniono typ"
+
+	annotation PBI_ResultType = Table
+

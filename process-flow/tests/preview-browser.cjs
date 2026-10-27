@@ -1,8 +1,21 @@
 const {ProcessFlowView} = require('../.tmp/tests/view.js');
 const dataView = JSON.parse(document.getElementById('preview-data').textContent);
+dataView.table.identity = dataView.table.rows.map((_, i) => ({key: `preview-row-${i}`}));
+window.previewTooltipCalls = [];
 const host = {
     locale: 'en-US', colorPalette: {getColor: () => ({value: '#1670a5'})},
     hostCapabilities: {allowInteractions: true},
+    tooltipService: {
+        enabled: () => true,
+        show: options => window.previewTooltipCalls.push({type: 'show', ...options}),
+        move: options => window.previewTooltipCalls.push({type: 'move', ...options}),
+        hide: options => window.previewTooltipCalls.push({type: 'hide', ...options})
+    },
+    createSelectionIdBuilder: () => {
+        let row;
+        return {withTable(table, i) {row = table.identity[i]; return this;},
+            createSelectionId: () => ({key: row.key, hasIdentity: () => true})};
+    },
     eventService: {
         renderingStarted() {}, renderingFinished() {},
         renderingFailed(_options, reason) {throw new Error(reason);}

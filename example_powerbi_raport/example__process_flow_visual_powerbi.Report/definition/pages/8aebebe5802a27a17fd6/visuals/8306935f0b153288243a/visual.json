@@ -1,0 +1,150 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "8306935f0b153288243a",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "height": 300,
+    "width": 400,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "FlowDetails"
+                        }
+                      },
+                      "Property": "Amount"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(FlowDetails.Amount)",
+              "nativeQueryRef": "Suma elementów Amount"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FlowDetails"
+                    }
+                  },
+                  "Property": "Description"
+                }
+              },
+              "queryRef": "FlowDetails.Description",
+              "nativeQueryRef": "Description"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FlowDetails"
+                    }
+                  },
+                  "Property": "Detail ID"
+                }
+              },
+              "queryRef": "FlowDetails.Detail ID",
+              "nativeQueryRef": "Detail ID"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FlowDetails"
+                    }
+                  },
+                  "Property": "Tooltip ID"
+                }
+              },
+              "queryRef": "FlowDetails.Tooltip ID",
+              "nativeQueryRef": "Tooltip ID"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "1e340f5becc89cb29950",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "FlowDetails"
+                  }
+                },
+                "Property": "Amount"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "b9dc31f35c3196b43b61",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FlowDetails"
+              }
+            },
+            "Property": "Description"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "16d7e7b4f64bf6cdd98a",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FlowDetails"
+              }
+            },
+            "Property": "Detail ID"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "a5a5465e4e378eb6e3be",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FlowDetails"
+              }
+            },
+            "Property": "Tooltip ID"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

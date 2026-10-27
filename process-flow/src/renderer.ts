@@ -134,8 +134,14 @@ export function renderGraph(container: HTMLElement, result: GraphResult, options
             "data-edge-id": edge.id, "data-source": edge.source, "data-target": edge.target
         }));
         const group = svgElement(document, "g", {
-            class: "process-flow-edge-label", transform: `translate(${edge.labelX},${edge.labelY})`
+            class: "process-flow-edge-label", transform: `translate(${edge.labelX},${edge.labelY})`,
+            "data-edge-id": edge.id
         });
+        paths.appendChild(svgElement(document, "path", {
+            class: "process-flow-edge-hit", d: edge.path, fill: "none", stroke: "transparent",
+            "stroke-width": Math.max(12, settings.edgeWidth), "pointer-events": "stroke",
+            "vector-effect": "non-scaling-stroke", "data-edge-id": edge.id, "aria-hidden": "true"
+        }));
         group.appendChild(svgElement(document, "rect", {
             x: -edge.labelWidth / 2, y: -edge.labelHeight / 2,
             width: edge.labelWidth, height: edge.labelHeight, rx: 4,

@@ -178,7 +178,28 @@ async function main() {
         await evaluate('window.setPreviewObjects({edges:{rightAngles:false}})');
         const smoothPaths=await evaluate('[...document.querySelectorAll(".process-flow-edge")].map(edge=>edge.getAttribute("d"))');
         assert.ok(smoothPaths.some(path=>/[CQ]/.test(path)));
-        console.log('Browser checks passed: Flow Groups, zoom, Fit, resizing, formatting, theme changes, high contrast, disabled interactions, empty/error states, and recovery.');
+        // Real browser pointer hit-testing; the host tooltip service itself is mocked.
+        await evaluate(`document.querySelector('[aria-label="Fit graph to view"]').click()`);
+        for (const rightAngles of [false, true]) {
+            await evaluate(`window.setPreviewObjects({edges:{rightAngles:${rightAngles}}})`);
+            for (const [target, key, row] of [['C', 'T002', 1], ['D', 'T003', 2]]) {
+                const point = await evaluate(`(() => {
+                    const path = document.querySelector('.process-flow-edge[data-source="B"][data-target="${target}"]');
+                    const label = [...document.querySelectorAll('.process-flow-edge-label')].find(e=>e.dataset.edgeId===path.dataset.edgeId);
+                    const box = label.getBoundingClientRect();
+                    return {x:box.x+box.width/2,y:box.y+box.height/2};
+                })()`);
+                await command('Input.dispatchMouseEvent', {type:'mouseMoved', x:point.x, y:point.y});
+                const payload = await evaluate('window.previewTooltipCalls.filter(c=>c.type!=="hide").at(-1)');
+                assert.equal(payload.dataItems.find(i=>i.displayName==='Tooltip ID').value,key);
+                assert.equal(payload.identities[0].key,`preview-row-${row}`);
+                assert.ok(Math.abs(payload.coordinates[0]-point.x)<1);
+                assert.ok(Math.abs(payload.coordinates[1]-point.y)<1);
+            }
+        }
+        await command('Input.dispatchMouseEvent', {type:'mouseMoved',x:1,y:1});
+        assert.equal(await evaluate('window.previewTooltipCalls.at(-1).type'),'hide');
+        console.log('Browser checks passed: Flow Groups, zoom, Fit, resizing, formatting, themes, high contrast, interaction permissions, data states, routing, and edge tooltip hit-testing with distinct row identities (mock host).');
     } finally {
         if (command && socket?.readyState === WebSocket.OPEN) await command('Browser.close').catch(() => {});
         socket?.close();

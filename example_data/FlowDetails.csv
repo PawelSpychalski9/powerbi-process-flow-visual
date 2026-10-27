@@ -1,0 +1,12 @@
+Tooltip ID,Detail ID,Description,Amount
+T001,D001,Records removed during ingestion,-10
+T002,D002,Missing customer identifier,-10
+T002,D003,Invalid transaction date,-8
+T003,D004,Duplicate flagged for manual review,-3
+T003,D005,Ambiguous record flagged for manual review,-2
+T004,D006,Records removed during transformation,-10
+T005,D007,Record removed after manual review,-1
+T006,D008,Records excluded from export,-8
+T007,D009,Records sent for additional checks,-3
+T008,D010,Records excluded during delivery,-6
+T009,D011,Records removed after final review,-2

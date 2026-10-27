@@ -1,19 +1,19 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
-  "name": "10def01925547dbbbdfb",
+  "name": "8f12ad4065488d25fb8e",
   "position": {
     "x": 9.8765784914355113,
     "y": 0,
     "z": 0,
-    "height": 1028.3987354207227,
-    "width": 1853.0930394555878,
+    "height": 1008.6455784378517,
+    "width": 1835.8090270955759,
     "tabOrder": 0
   },
   "visual": {
     "visualType": "processFlowBAAAB49BFE6440FCA0A95BC2620753B8",
     "query": {
       "queryState": {
-        "flowGroup": {
+        "source": {
           "projections": [
             {
               "field": {
@@ -23,124 +23,11 @@
                       "Entity": "example_data"
                     }
                   },
-                  "Property": "Flow Group"
+                  "Property": "Source"
                 }
               },
-              "queryRef": "example_data.Flow Group",
-              "nativeQueryRef": "Flow Group"
-            }
-          ]
-        },
-        "group": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "example_data"
-                    }
-                  },
-                  "Property": "Group"
-                }
-              },
-              "queryRef": "example_data.Group",
-              "nativeQueryRef": "Group"
-            }
-          ]
-        },
-        "label": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "example_data"
-                    }
-                  },
-                  "Property": "Label"
-                }
-              },
-              "queryRef": "example_data.Label",
-              "nativeQueryRef": "Label"
-            }
-          ]
-        },
-        "nodeDescription": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "example_data"
-                    }
-                  },
-                  "Property": "Node Description"
-                }
-              },
-              "queryRef": "example_data.Node Description",
-              "nativeQueryRef": "Node Description"
-            }
-          ]
-        },
-        "nodeTitle": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "example_data"
-                    }
-                  },
-                  "Property": "Node Title"
-                }
-              },
-              "queryRef": "example_data.Node Title",
-              "nativeQueryRef": "Node Title"
-            }
-          ]
-        },
-        "tooltipId": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "example_data"
-                    }
-                  },
-                  "Property": "Tooltip ID"
-                }
-              },
-              "queryRef": "example_data.Tooltip ID",
-              "nativeQueryRef": "Tooltip ID"
-            }
-          ]
-        },
-        "value": {
-          "projections": [
-            {
-              "field": {
-                "Aggregation": {
-                  "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "example_data"
-                        }
-                      },
-                      "Property": "Value"
-                    }
-                  },
-                  "Function": 0
-                }
-              },
-              "queryRef": "Sum(example_data.Value)",
-              "nativeQueryRef": "Suma elementów Value"
+              "queryRef": "example_data.Source",
+              "nativeQueryRef": "Source"
             }
           ]
         },
@@ -162,7 +49,30 @@
             }
           ]
         },
-        "source": {
+        "value": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "example_data"
+                        }
+                      },
+                      "Property": "Value"
+                    }
+                  },
+                  "Function": 5
+                }
+              },
+              "queryRef": "CountNonNull(example_data.Value)",
+              "nativeQueryRef": "Liczba elementów Value"
+            }
+          ]
+        },
+        "tooltipId": {
           "projections": [
             {
               "field": {
@@ -172,11 +82,101 @@
                       "Entity": "example_data"
                     }
                   },
-                  "Property": "Source"
+                  "Property": "Tooltip ID"
                 }
               },
-              "queryRef": "example_data.Source",
-              "nativeQueryRef": "Source"
+              "queryRef": "example_data.Tooltip ID",
+              "nativeQueryRef": "Tooltip ID"
+            }
+          ]
+        },
+        "nodeTitle": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "example_data"
+                    }
+                  },
+                  "Property": "Node Title"
+                }
+              },
+              "queryRef": "example_data.Node Title",
+              "nativeQueryRef": "Node Title"
+            }
+          ]
+        },
+        "nodeDescription": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "example_data"
+                    }
+                  },
+                  "Property": "Node Description"
+                }
+              },
+              "queryRef": "example_data.Node Description",
+              "nativeQueryRef": "Node Description"
+            }
+          ]
+        },
+        "label": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "example_data"
+                    }
+                  },
+                  "Property": "Label"
+                }
+              },
+              "queryRef": "example_data.Label",
+              "nativeQueryRef": "Label"
+            }
+          ]
+        },
+        "group": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "example_data"
+                    }
+                  },
+                  "Property": "Group"
+                }
+              },
+              "queryRef": "example_data.Group",
+              "nativeQueryRef": "Group"
+            }
+          ]
+        },
+        "flowGroup": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "example_data"
+                    }
+                  },
+                  "Property": "Flow Group"
+                }
+              },
+              "queryRef": "example_data.Flow Group",
+              "nativeQueryRef": "Flow Group"
             }
           ]
         }
@@ -196,7 +196,7 @@
                     "Property": "Value"
                   }
                 },
-                "Function": 0
+                "Function": 5
               }
             },
             "direction": "Descending"
@@ -205,12 +205,34 @@
         "isDefaultSort": true
       }
     },
+    "visualContainerObjects": {
+      "visualTooltip": [
+        {
+          "properties": {
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'8aebebe5802a27a17fd6'"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
     "drillFilterOtherVisuals": true
   },
   "filterConfig": {
     "filters": [
       {
-        "name": "9f18a382fefdaacf1ea1",
+        "name": "b933c97ecdaa82438292",
         "field": {
           "Column": {
             "Expression": {
@@ -218,102 +240,13 @@
                 "Entity": "example_data"
               }
             },
-            "Property": "Flow Group"
+            "Property": "Source"
           }
         },
         "type": "Categorical"
       },
       {
-        "name": "ecbddf154782f29d4c8a",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "example_data"
-              }
-            },
-            "Property": "Group"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "429fae4a86b7959a1ed5",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "example_data"
-              }
-            },
-            "Property": "Label"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "2e2f3c45e921f1984d26",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "example_data"
-              }
-            },
-            "Property": "Node Description"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "5744461b757cbc91a1a8",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "example_data"
-              }
-            },
-            "Property": "Node Title"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "0a0cfd8f93e3603b9bed",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "example_data"
-              }
-            },
-            "Property": "Tooltip ID"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "d661f09204d6bf2b5b3e",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "example_data"
-                  }
-                },
-                "Property": "Value"
-              }
-            },
-            "Function": 0
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "3250dba424dee73f4e81",
+        "name": "49872197772c94c60a4e",
         "field": {
           "Column": {
             "Expression": {
@@ -327,7 +260,26 @@
         "type": "Categorical"
       },
       {
-        "name": "1cb018826d6b103fd138",
+        "name": "f17b5a84be521cd06c3e",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "example_data"
+                  }
+                },
+                "Property": "Value"
+              }
+            },
+            "Function": 5
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "39007fc79a0d771bb611",
         "field": {
           "Column": {
             "Expression": {
@@ -335,7 +287,77 @@
                 "Entity": "example_data"
               }
             },
-            "Property": "Source"
+            "Property": "Tooltip ID"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "2c85102ee6e8bebd6cff",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "example_data"
+              }
+            },
+            "Property": "Node Title"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "2421459161e2b9bcdd2b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "example_data"
+              }
+            },
+            "Property": "Node Description"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "9f9a04dfbd9b91e7dcf1",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "example_data"
+              }
+            },
+            "Property": "Label"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "cd87aa6ab2aa0f52a744",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "example_data"
+              }
+            },
+            "Property": "Group"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "4dc542ad46bec1f70604",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "example_data"
+              }
+            },
+            "Property": "Flow Group"
           }
         },
         "type": "Categorical"
