@@ -384,6 +384,7 @@
     "roles": ["tooltipId"]
   },
   "privileges": [],
+  "supportsMultiVisualSelection": true,
   "supportsLandingPage": true,
   "supportsEmptyDataView": true
 }

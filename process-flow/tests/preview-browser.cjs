@@ -1,4 +1,8 @@
 const {ProcessFlowView} = require('../.tmp/tests/view.js');
+const {selectionHost, identity} = require('./selection-host.cjs');
+const selection = selectionHost();
+window.previewSelectionCalls = selection.calls;
+window.restorePreviewSelection = keys => selection.restore(keys.map(key => identity(key)));
 const dataView = JSON.parse(document.getElementById('preview-data').textContent);
 dataView.table.identity = dataView.table.rows.map((_, i) => ({key: `preview-row-${i}`}));
 window.previewTooltipCalls = [];
@@ -11,11 +15,8 @@ const host = {
         move: options => window.previewTooltipCalls.push({type: 'move', ...options}),
         hide: options => window.previewTooltipCalls.push({type: 'hide', ...options})
     },
-    createSelectionIdBuilder: () => {
-        let row;
-        return {withTable(table, i) {row = table.identity[i]; return this;},
-            createSelectionId: () => ({key: row.key, hasIdentity: () => true})};
-    },
+    createSelectionManager: () => selection.manager,
+    createSelectionIdBuilder: selection.createSelectionIdBuilder,
     eventService: {
         renderingStarted() {}, renderingFinished() {},
         renderingFailed(_options, reason) {throw new Error(reason);}

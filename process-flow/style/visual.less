@@ -50,4 +50,9 @@
     .process-flow-node-id { fill: var(--flow-fg); font-size: var(--flow-small-font-size); }
     .process-flow-value { fill: var(--flow-fg); font-size: var(--flow-font-size); font-weight: 600; }
     .process-flow-label { fill: var(--flow-fg); font-size: var(--flow-small-font-size); }
+    [data-selectable="true"] { cursor: pointer; }
+    .process-flow-edge[data-selected="true"] { stroke: var(--flow-active); stroke-dasharray: 6 3; }
+    .process-flow-edge-label[data-selected="true"] > rect,
+    .process-flow-node[data-selected="true"] > rect { stroke: var(--flow-active); stroke-width: 3; stroke-dasharray: 6 3; }
+    .process-flow-interaction-error { padding: 6px 10px; }
 }

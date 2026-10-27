@@ -199,7 +199,54 @@ async function main() {
         }
         await command('Input.dispatchMouseEvent', {type:'mouseMoved',x:1,y:1});
         assert.equal(await evaluate('window.previewTooltipCalls.at(-1).type'),'hide');
-        console.log('Browser checks passed: Flow Groups, zoom, Fit, resizing, formatting, themes, high contrast, interaction permissions, data states, routing, and edge tooltip hit-testing with distinct row identities (mock host).');
+        const pointFor = async selector => evaluate(`(() => {
+            const e=document.querySelector(${JSON.stringify(selector)}), b=e.getBoundingClientRect();
+            return {x:b.x+b.width/2,y:b.y+b.height/2};
+        })()`);
+        const clickPoint = async (point, modifiers = 0, button = 'left') => {
+            await command('Input.dispatchMouseEvent',{type:'mousePressed',...point,button,clickCount:1,modifiers});
+            await command('Input.dispatchMouseEvent',{type:'mouseReleased',...point,button,clickCount:1,modifiers});
+        };
+        const badgeFor = target => evaluate(`(() => {
+            const path=document.querySelector('.process-flow-edge[data-source="B"][data-target="${target}"]');
+            const e=[...document.querySelectorAll('.process-flow-edge-label')].find(e=>e.dataset.edgeId===path.dataset.edgeId);
+            const b=e.getBoundingClientRect(); return {x:b.x+b.width/2,y:b.y+b.height/2};
+        })()`);
+        const selectedCount = () => evaluate('document.querySelectorAll(".process-flow-edge[data-selected=true]").length');
+        await clickPoint(await badgeFor('C'));
+        assert.equal(await selectedCount(),1);
+        assert.equal(await evaluate('window.previewSelectionCalls.at(-1).keys[0]'),'preview-row-1');
+        assert.equal(await evaluate('getComputedStyle(document.querySelector(".process-flow-edge[data-selected=true]")).strokeDasharray'),'6px, 3px');
+        await clickPoint(await badgeFor('D'),2);
+        assert.equal(await selectedCount(),2);
+        await clickPoint(await badgeFor('C'),2);
+        assert.equal(await selectedCount(),1);
+        await clickPoint(await pointFor('[aria-label="Fit graph to view"]'));
+        assert.equal(await selectedCount(),1);
+        await clickPoint(await badgeFor('C'),0,'right');
+        assert.equal(await evaluate('window.previewSelectionCalls.at(-1).type'),'contextmenu');
+        assert.equal(await evaluate('window.previewSelectionCalls.at(-1).key'),'preview-row-1');
+        await clickPoint(await pointFor('[data-node-id="H"] rect'));
+        assert.equal(await selectedCount(),2);
+        await evaluate('window.setPreviewTheme("#ffff00","#000000","#ff0000",true)');
+        assert.equal(await selectedCount(),2);
+        assert.equal(await evaluate('getComputedStyle(document.querySelector(".process-flow-edge[data-selected=true]")).stroke'),'rgb(0, 255, 255)');
+        const selectedScreenshot=await command('Page.captureScreenshot');
+        fs.writeFileSync('.tmp/m05-selection.png',Buffer.from(selectedScreenshot.data,'base64'));
+        await evaluate('window.restorePreviewSelection(["preview-row-1"])');
+        assert.equal(await selectedCount(),1);
+        await evaluate('window.resizePreview(800,450)');
+        assert.equal(await selectedCount(),1);
+        const backgroundPoint=await evaluate(`(() => {const b=document.querySelector('svg').getBoundingClientRect();return {x:b.x+1,y:b.y+1};})()`);
+        await clickPoint(backgroundPoint);
+        assert.equal(await selectedCount(),0);
+        assert.equal(await evaluate('window.previewSelectionCalls.at(-1).type'),'clear');
+        await evaluate('window.setPreviewInteractions(false)');
+        const callsBefore=await evaluate('window.previewSelectionCalls.length');
+        await clickPoint(await badgeFor('C'));
+        await clickPoint(await badgeFor('C'),0,'right');
+        assert.equal(await evaluate('window.previewSelectionCalls.length'),callsBefore);
+        console.log('Browser checks passed: formatting, routing, zoom/Fit, tooltips, real pointer selection, Ctrl-click, node selection, deselection, context menus, host restoration, high contrast and interaction permissions (mock host).');
     } finally {
         if (command && socket?.readyState === WebSocket.OPEN) await command('Browser.close').catch(() => {});
         socket?.close();
