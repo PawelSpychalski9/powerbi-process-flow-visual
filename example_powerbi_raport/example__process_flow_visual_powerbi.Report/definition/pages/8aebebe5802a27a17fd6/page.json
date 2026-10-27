@@ -1,0 +1,9 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "8aebebe5802a27a17fd6",
+  "displayName": "Strona 2",
+  "displayOption": "ActualSize",
+  "height": 300,
+  "width": 400,
+  "type": "Tooltip"
+}

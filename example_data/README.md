@@ -37,3 +37,15 @@ between groups (C/D → E), and grouped/ungrouped connections (A → B and F/G �
 
 For updating an existing Power BI report, see
 [the example report instructions](../example_powerbi_raport/README.md).
+
+## Related detail fixture
+
+`FlowDetails.csv` contains illustrative detail records, with Text columns
+`Tooltip ID`, `Detail ID`, `Description`, and numeric `Amount`. The main table's
+nine populated Tooltip IDs are unique; each can filter one or more detail rows.
+B -> C (T002) has D002/D003 totaling -18; B -> D (T003) has D004/D005 totaling -5.
+These totals make the example easy to check; conservation is not required by the
+visual's data contract. All records are synthetic.
+
+Follow [the tooltip setup guide](../process-flow/docs/tooltips.md) to create the
+relationship and report page. Importing the CSV alone does not configure a tooltip.

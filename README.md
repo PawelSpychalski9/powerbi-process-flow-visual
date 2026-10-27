@@ -5,8 +5,10 @@ An open-source Power BI custom visual project for process flow diagrams.
 The visual renders directed process graphs with signed edge labels, node titles,
 theme-aware formatting, high contrast, and zoom/Fit controls. The optional
 `Flow Group` field encloses Source nodes in titled, configurable containers;
-without it the original graph layout is preserved. Native report tooltips and
-selection interactions are later milestones.
+without it the original graph layout is preserved. Edge hover supports native
+tooltips and passes row identities to author-configured report-page tooltips.
+Selection interactions remain a later milestone. Report-page detail filtering
+requires the semantic-model relationship and manual Power BI validation below.
 
 ## Repository structure
 
@@ -74,3 +76,5 @@ by Git. Commit `package-lock.json` to preserve the dependency versions.
 See [the sample data documentation](example_data/README.md) for the CSV format.
 See [Flow Groups](process-flow/docs/flow-groups.md) for membership rules, layout,
 formatting, limitations, and Power BI Desktop validation.
+See [edge tooltips and related details](process-flow/docs/tooltips.md) for the
+sample detail table, relationship setup, and report-page tooltip checks.

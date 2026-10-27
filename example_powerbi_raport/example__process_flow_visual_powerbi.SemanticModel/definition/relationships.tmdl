@@ -1,0 +1,4 @@
+relationship AutoDetected_c0e65fa1-14d7-448b-9a8e-0a3c5e5e86d8
+	fromColumn: FlowDetails.'Tooltip ID'
+	toColumn: example_data.'Tooltip ID'
+

@@ -21,7 +21,7 @@ table example_data
 		dataType: int64
 		formatString: 0
 		lineageTag: 8626a64b-9c5d-458f-9786-ad449cad2120
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: Value
 
 		annotation SummarizationSetBy = Automatic

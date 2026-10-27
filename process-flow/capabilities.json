@@ -379,6 +379,10 @@
       }
     }
   },
+  "tooltips": {
+    "supportedTypes": { "default": true, "canvas": true },
+    "roles": ["tooltipId"]
+  },
   "privileges": [],
   "supportsLandingPage": true,
   "supportsEmptyDataView": true

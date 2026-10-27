@@ -2,6 +2,7 @@ import powerbi from "powerbi-visuals-api";
 import { parseGraph, GraphResult } from "./graph";
 import { createZoomState, renderGraph } from "./renderer";
 import { buildFormattingModel, readSettings, resolveAppearance } from "./formatting";
+import { bindEdgeTooltips, edgeIdentities } from "./tooltips";
 
 /** Host lifecycle kept separate from the stylesheet entry point for DOM tests. */
 export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
@@ -12,6 +13,7 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
     private readonly zoom = createZoomState();
     private dataView?: powerbi.DataView;
     private settings = readSettings();
+    private disposeTooltips: () => void = () => undefined;
 
     constructor(private readonly options: powerbi.extensibility.visual.VisualConstructorOptions) {
         this.container = options.element.ownerDocument.createElement("div");
@@ -19,6 +21,7 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
     }
 
     public update(options: powerbi.extensibility.visual.VisualUpdateOptions): void {
+        this.disposeTooltips();
         this.options.host.eventService.renderingStarted(options);
         try {
             if (options.type & powerbi.VisualUpdateType.Data) {
@@ -44,6 +47,8 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
                 appearance: resolveAppearance(this.settings, this.options.host.colorPalette, accent),
                 allowInteractions: this.options.host.hostCapabilities?.allowInteractions !== false
             });
+            this.disposeTooltips = bindEdgeTooltips(this.container, this.options.host.tooltipService,
+                this.result.edges, edgeIdentities(this.options.host, this.dataView?.table, this.result.edges), this.options.host.locale);
             this.options.host.eventService.renderingFinished(options);
         } catch {
             this.container.replaceChildren();
@@ -58,6 +63,7 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
     }
 
     public destroy(): void {
+        this.disposeTooltips();
         this.container.remove();
     }
 }

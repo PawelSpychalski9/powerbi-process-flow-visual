@@ -9,11 +9,12 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 1
 
-annotation PBI_QueryOrder = ["example_data"]
+annotation PBI_QueryOrder = ["example_data","FlowDetails"]
 
 annotation PBI_ProTooling = ["DevMode"]
 
 ref table example_data
+ref table FlowDetails
 
 ref cultureInfo pl-PL
 
