@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "example__process_flow_visual_powerbi"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "fced6d67-784c-4df8-b619-a5086e02d6d2"
+  }
+}

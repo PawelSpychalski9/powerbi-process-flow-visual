@@ -2,14 +2,17 @@
 
 An open-source Power BI custom visual project for process flow diagrams.
 
-The project currently contains the generated visual scaffold, which displays an
-update counter. Rendering process diagrams and mapping the sample data fields are
-not implemented yet.
+The visual renders directed process graphs with signed edge labels, node titles,
+theme-aware formatting, high contrast, and zoom/Fit controls. The optional
+`Flow Group` field encloses Source nodes in titled, configurable containers;
+without it the original graph layout is preserved. Native report tooltips and
+selection interactions are later milestones.
 
 ## Repository structure
 
 - `process-flow/`: visual source code, assets, configuration, and npm dependencies.
 - `example_data/`: sample CSV data and a description of its columns.
+- `example_powerbi_raport/`: instructions for updating an existing example report.
 - `LICENSE`: MIT license.
 
 ## Setup
@@ -58,6 +61,9 @@ page at `/`. To stop it, press Ctrl+C in its terminal.
 
 ```powershell
 npm.cmd run lint
+npm.cmd run typecheck
+npm.cmd test
+npm.cmd run test:browser
 npm.cmd run package
 ```
 
@@ -66,3 +72,5 @@ into Power BI. Dependencies, certificates, and generated build files are ignored
 by Git. Commit `package-lock.json` to preserve the dependency versions.
 
 See [the sample data documentation](example_data/README.md) for the CSV format.
+See [Flow Groups](process-flow/docs/flow-groups.md) for membership rules, layout,
+formatting, limitations, and Power BI Desktop validation.

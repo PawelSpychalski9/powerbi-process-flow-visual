@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0.0",
+  "author": {
+    "name": "Pawel Spychalski",
+    "email": "PawelSpychalski9@users.noreply.github.com"
+  },
+  "resources": [
+    {
+      "resourceId": "rId0",
+      "sourceType": 5,
+      "file": "resources/processFlowBAAAB49BFE6440FCA0A95BC2620753B8.pbiviz.json"
+    }
+  ],
+  "visual": {
+    "guid": "processFlowBAAAB49BFE6440FCA0A95BC2620753B8",
+    "name": "processFlow",
+    "displayName": "Process Flow",
+    "version": "1.0.0.0",
+    "description": "An open-source Power BI custom visual for creating interactive process flow diagrams with nodes, directional connections, and quantitative values.",
+    "supportUrl": "https://github.com/PawelSpychalski9/powerbi-process-flow-visual/issues",
+    "gitHubUrl": "https://github.com/PawelSpychalski9/powerbi-process-flow-visual",
+    "visualClassName": "Visual"
+  },
+  "metadata": {
+    "pbivizjson": {
+      "resourceId": "rId0"
+    }
+  }
+}

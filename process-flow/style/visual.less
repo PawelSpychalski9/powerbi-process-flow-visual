@@ -3,8 +3,8 @@
     flex-direction: column;
     overflow: hidden;
     box-sizing: border-box;
-    color: #242424;
-    background: #fff;
+    color: var(--flow-fg, #242424);
+    background: var(--flow-bg, #fff);
     font-family: "Segoe UI", Arial, sans-serif;
     font-size: 13px;
 
@@ -15,7 +15,10 @@
     }
 
     .process-flow-summary { font-weight: 600; }
-    .process-flow-warning { color: #694700; background: #fff4ce; }
+    .process-flow-warning { border-left: 3px solid var(--flow-fg); }
+    .process-flow-state { padding: 12px 20px; overflow: auto; }
+    .process-flow-state h2 { margin: 0 0 10px; font-size: 18px; }
+    .process-flow-state p { max-width: 600px; line-height: 1.5; }
     .process-flow-viewport { flex: 1 1 auto; min-height: 0; overflow: auto; }
     .process-flow-graph { display: block; }
     .process-flow-zoom {
@@ -25,28 +28,26 @@
         gap: 4px;
         padding: 0 8px;
         box-sizing: border-box;
-        border-top: 1px solid #e1e1e1;
-        background: #fff;
+        border-top: 1px solid var(--flow-fg);
+        background: var(--flow-bg);
     }
     .process-flow-zoom button {
         min-width: 30px;
         height: 28px;
-        border: 1px solid #c8c8c8;
+        border: 1px solid var(--flow-fg);
         border-radius: 4px;
         color: inherit;
-        background: #fff;
+        background: var(--flow-bg);
         font: inherit;
         cursor: pointer;
     }
-    .process-flow-zoom button:hover { background: #f0f0f0; }
-    .process-flow-zoom button:focus-visible { outline: 2px solid #1670a5; outline-offset: 1px; }
+    .process-flow-zoom button:hover { outline: 1px solid var(--flow-active); }
+    .process-flow-zoom button:focus-visible { outline: 2px solid var(--flow-active); outline-offset: 1px; }
     .process-flow-zoom button:disabled { opacity: 0.4; cursor: default; }
-    .process-flow-zoom button[aria-pressed="true"] { background: #e8f1fa; }
+    .process-flow-zoom button[aria-pressed="true"] { border: 2px solid var(--flow-active); }
     .process-flow-zoom-percentage { min-width: 48px; text-align: center; font-variant-numeric: tabular-nums; }
-    .process-flow-node rect { fill: #fff; }
-    .process-flow-node-title { fill: #242424; font-size: 14px; font-weight: 600; }
-    .process-flow-node-id { fill: #616161; font-size: 11px; }
-    .process-flow-edge-label rect { fill: #fff; stroke: #e1e1e1; stroke-width: 0.7; }
-    .process-flow-value { fill: #242424; font-size: 13px; font-weight: 600; }
-    .process-flow-label { fill: #616161; font-size: 11px; }
+    .process-flow-node-title { fill: var(--flow-fg); font-size: var(--flow-title-font-size); font-weight: 600; }
+    .process-flow-node-id { fill: var(--flow-fg); font-size: var(--flow-small-font-size); }
+    .process-flow-value { fill: var(--flow-fg); font-size: var(--flow-font-size); font-weight: 600; }
+    .process-flow-label { fill: var(--flow-fg); font-size: var(--flow-small-font-size); }
 }

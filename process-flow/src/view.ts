@@ -1,6 +1,7 @@
 import powerbi from "powerbi-visuals-api";
 import { parseGraph, GraphResult } from "./graph";
 import { createZoomState, renderGraph } from "./renderer";
+import { buildFormattingModel, readSettings, resolveAppearance } from "./formatting";
 
 /** Host lifecycle kept separate from the stylesheet entry point for DOM tests. */
 export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
@@ -9,6 +10,8 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
     private readonly container: HTMLDivElement;
     private result: GraphResult = parseGraph();
     private readonly zoom = createZoomState();
+    private dataView?: powerbi.DataView;
+    private settings = readSettings();
 
     constructor(private readonly options: powerbi.extensibility.visual.VisualConstructorOptions) {
         this.container = options.element.ownerDocument.createElement("div");
@@ -18,16 +21,28 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
     public update(options: powerbi.extensibility.visual.VisualUpdateOptions): void {
         this.options.host.eventService.renderingStarted(options);
         try {
-            if (options.dataViews?.length || (options.type & powerbi.VisualUpdateType.Data)) {
-                this.result = parseGraph(options.dataViews?.[0]);
+            if (options.type & powerbi.VisualUpdateType.Data) {
+                this.dataView = options.dataViews?.[0];
+                this.result = parseGraph(this.dataView);
+            } else if (options.dataViews?.[0]) {
+                const incoming = options.dataViews[0];
+                this.dataView = { ...this.dataView, ...incoming,
+                    metadata: { ...this.dataView?.metadata, ...incoming.metadata },
+                    table: incoming.table ?? this.dataView?.table };
+                this.result = parseGraph(this.dataView);
             }
+            this.settings = readSettings(this.dataView?.metadata.objects);
+            const accent = this.options.host.colorPalette.getColor("process-flow").value;
             renderGraph(this.container, this.result, {
                 width: options.viewport.width,
                 height: options.viewport.height,
-                accent: this.options.host.colorPalette.getColor("process-flow").value,
+                accent,
                 markerId: this.markerId,
                 locale: this.options.host.locale,
-                zoom: this.zoom
+                zoom: this.zoom,
+                settings: this.settings,
+                appearance: resolveAppearance(this.settings, this.options.host.colorPalette, accent),
+                allowInteractions: this.options.host.hostCapabilities?.allowInteractions !== false
             });
             this.options.host.eventService.renderingFinished(options);
         } catch {
@@ -39,7 +54,7 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
     }
 
     public getFormattingModel(): powerbi.visuals.FormattingModel {
-        return { cards: [] };
+        return buildFormattingModel(this.settings, this.options.host.colorPalette.isHighContrast);
     }
 
     public destroy(): void {

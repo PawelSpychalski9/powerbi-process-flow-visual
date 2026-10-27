@@ -1,4 +1,7 @@
 import { Graph, GraphEdge, GraphNode } from "./graph";
+import { GraphSettings, readSettings } from "./formatting";
+import { layoutCompoundGraph } from "./compoundLayout";
+import { polylinePath, stylePolyline } from "./routing";
 
 export interface PositionedNode extends GraphNode {
     x: number;
@@ -24,11 +27,21 @@ export interface GraphLayout {
     edges: PositionedEdge[];
     width: number;
     height: number;
+    groups?: PositionedGroup[];
+}
+
+export interface PositionedGroup {
+    id: string;
+    title: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    nodeIds: string[];
 }
 
 const NODE_WIDTH = 156;
 const NODE_HEIGHT = 76;
-const ROW_GAP = 76;
 const MARGIN = 36;
 const LANE = 42;
 const compare = (a: string, b: string): number => a < b ? -1 : a > b ? 1 : 0;
@@ -57,14 +70,14 @@ function shortenToWidth(text: string, width: number, fontSize: number): string {
     return shortened + "…";
 }
 
-function titleLines(title: string): string[] {
+function titleLines(title: string, width: number, fontSize: number): string[] {
     const characters = Array.from(title.replace(/\s+/g, " ").trim());
     let first = "";
     let index = 0;
-    while (index < characters.length && textWidth(first + characters[index], 14) <= NODE_WIDTH - 24) {
+    while (index < characters.length && textWidth(first + characters[index], fontSize) <= width - 24) {
         first += characters[index++];
     }
-    return index === characters.length ? [first] : [first, shortenToWidth(characters.slice(index).join(""), NODE_WIDTH - 24, 14)];
+    return index === characters.length ? [first] : [first, shortenToWidth(characters.slice(index).join(""), width - 24, fontSize)];
 }
 
 /** Iterative Kosaraju traversal: cycles cannot recurse forever or overflow the stack. */
@@ -111,8 +124,19 @@ function components(graph: Graph): string[][] {
 }
 
 /** Rank the acyclic component graph; nodes inside a cycle share a column. */
-export function layoutGraph(graph: Graph, locale = "en-US"): GraphLayout {
+export function layoutGraph(graph: Graph, locale = "en-US", settings: GraphSettings = readSettings()): GraphLayout {
+    if (graph.nodes.some(node => node.flowGroup)) return layoutCompoundGraph(graph, locale, settings, layoutFlatGraph);
+    return layoutFlatGraph(graph, locale, settings);
+}
+
+export function layoutFlatGraph(graph: Graph, locale = "en-US", settings: GraphSettings = readSettings()): GraphLayout {
     if (!graph.nodes.length) return { nodes: [], edges: [], width: 0, height: 0 };
+    const nodeWidth = Math.max(NODE_WIDTH, (settings.fontSize + 1) * 11.2);
+    const nodeHeight = Math.max(NODE_HEIGHT, (settings.fontSize + 1) * 4.8);
+    const rowGap = Math.max(settings.verticalSpacing, settings.fontSize * 4.8);
+    const labelFontSize = Math.max(10, settings.fontSize - 2);
+    const labelMaxWidth = Math.max(148, (settings.fontSize - 1) * 12);
+    const lane = Math.max(LANE, settings.fontSize * 3.8);
     const groups = components(graph);
     const groupOf = new Map<string, number>();
     groups.forEach((group, index) => group.forEach(id => groupOf.set(id, index)));
@@ -147,25 +171,28 @@ export function layoutGraph(graph: Graph, locale = "en-US"): GraphLayout {
         const pair = JSON.stringify([edge.source, edge.target]);
         pairCounts.set(pair, (pairCounts.get(pair) ?? 0) + 1);
     }
-    const gap = 180;
-    const parallelMargin = (Math.max(1, ...pairCounts.values()) - 1) * LANE / 2;
-    const top = MARGIN + topEdges.length * LANE + parallelMargin;
-    const contentHeight = Math.max(...columns.map(column => column.length * (NODE_HEIGHT + ROW_GAP) - ROW_GAP));
+    const gap = Math.max(settings.horizontalSpacing, labelMaxWidth + 32);
+    const parallelMargin = (Math.max(1, ...pairCounts.values()) - 1) * lane / 2;
+    const top = MARGIN + topEdges.length * lane + parallelMargin;
+    const contentHeight = Math.max(...columns.map(column => column.length * (nodeHeight + rowGap) - rowGap));
     const nodes: PositionedNode[] = [];
     let x = MARGIN;
     columns.forEach((column, index) => {
-        const columnHeight = column.length * (NODE_HEIGHT + ROW_GAP) - ROW_GAP;
+        const columnHeight = column.length * (nodeHeight + rowGap) - rowGap;
         column.forEach((node, row) => nodes.push({
-            ...node, x, y: top + (contentHeight - columnHeight) / 2 + row * (NODE_HEIGHT + ROW_GAP),
-            width: NODE_WIDTH, height: NODE_HEIGHT, rank: index, lines: titleLines(node.title)
+            ...node, x, y: top + (contentHeight - columnHeight) / 2 + row * (nodeHeight + rowGap),
+            width: nodeWidth, height: nodeHeight, rank: index, lines: titleLines(node.title, nodeWidth, settings.fontSize + 1)
         }));
-        x += NODE_WIDTH + gap + sideCounts[index] * LANE;
+        x += nodeWidth + gap + sideCounts[index] * lane;
     });
     const byId = new Map(nodes.map(node => [node.id, node]));
     const pairIndex = new Map<string, number>();
     let numberFormat: Intl.NumberFormat;
-    try { numberFormat = new Intl.NumberFormat(locale, { maximumSignificantDigits: 12 }); }
-    catch { numberFormat = new Intl.NumberFormat("en-US", { maximumSignificantDigits: 12 }); }
+    const numberOptions: Intl.NumberFormatOptions = settings.automaticValues ? { maximumSignificantDigits: 12 } :
+        { minimumFractionDigits: settings.decimalPlaces, maximumFractionDigits: settings.decimalPlaces };
+    numberOptions.useGrouping = settings.thousandsSeparator;
+    try { numberFormat = new Intl.NumberFormat(locale, numberOptions); }
+    catch { numberFormat = new Intl.NumberFormat("en-US", numberOptions); }
     const sideIndex = columns.map(() => 0);
     let topIndex = 0;
     let maxY = top + contentHeight;
@@ -183,40 +210,48 @@ export function layoutGraph(graph: Graph, locale = "en-US"): GraphLayout {
         const occurrence = pairIndex.get(pair) ?? 0;
         pairIndex.set(pair, occurrence + 1);
         if (source.rank === target.rank) {
-            const lane = ++sideIndex[source.rank];
-            const outerX = startX + 88 + lane * LANE;
+            const sideLane = ++sideIndex[source.rank];
+            const outerX = startX + labelMaxWidth / 2 + 14 + sideLane * lane;
             if (source.id === target.id) {
                 // Separate top and bottom ports keep a self-loop's arrow visible.
-                const loopBottom = source.y + source.height + 28 + occurrence * LANE;
+                const loopBottom = source.y + source.height + 28 + occurrence * lane;
                 path = `M ${startX} ${startY} L ${outerX} ${startY} L ${outerX} ${loopBottom} L ${source.x + source.width / 2} ${loopBottom} L ${source.x + source.width / 2} ${source.y + source.height}`;
                 labelX = outerX;
                 labelY = loopBottom - 13;
                 maxY = Math.max(maxY, loopBottom + 32);
             } else {
-                path = `M ${startX} ${startY} C ${outerX} ${startY}, ${outerX} ${endY}, ${target.x + target.width} ${endY}`;
                 labelX = startX + (outerX - startX) * 0.75;
                 labelY = (startY + endY) / 2;
+                path = settings.orthogonalEdges ? polylinePath([
+                    { x: startX, y: startY }, { x: labelX, y: startY },
+                    { x: labelX, y: endY }, { x: target.x + target.width, y: endY }
+                ], true) : `M ${startX} ${startY} C ${outerX} ${startY}, ${outerX} ${endY}, ${target.x + target.width} ${endY}`;
             }
         } else if (target.rank - source.rank > 1) {
-            const laneY = MARGIN + topIndex++ * LANE;
+            const laneY = MARGIN + topIndex++ * lane;
             path = `M ${startX} ${startY} L ${startX + 20} ${startY} L ${startX + 20} ${laneY} L ${endX - 20} ${laneY} L ${endX - 20} ${endY} L ${endX} ${endY}`;
             labelX = (startX + endX) / 2;
             labelY = laneY;
         } else {
-            const offset = (occurrence - (pairCounts.get(pair)! - 1) / 2) * LANE;
+            const offset = (occurrence - (pairCounts.get(pair)! - 1) / 2) * lane;
             const middleX = (startX + endX) / 2;
-            path = `M ${startX} ${startY} C ${middleX} ${startY + offset}, ${middleX} ${endY + offset}, ${endX} ${endY}`;
             labelX = middleX;
             labelY = (startY + endY) / 2 + offset * 0.75;
+            path = settings.orthogonalEdges ? polylinePath([
+                { x: startX, y: startY }, { x: middleX - 16, y: startY },
+                { x: middleX - 16, y: labelY }, { x: middleX + 16, y: labelY },
+                { x: middleX + 16, y: endY }, { x: endX, y: endY }
+            ], true) : `M ${startX} ${startY} C ${middleX} ${startY + offset}, ${middleX} ${endY + offset}, ${endX} ${endY}`;
             maxY = Math.max(maxY, startY + offset, endY + offset);
         }
         let valueText = numberFormat.format(edge.value);
-        if (textWidth(valueText, 13) > 150) {
+        if (textWidth(valueText, settings.fontSize) > labelMaxWidth) {
             valueText = new Intl.NumberFormat(numberFormat.resolvedOptions().locale, { notation: "scientific", maximumSignificantDigits: 6 }).format(edge.value);
         }
-        const labelText = edge.label ? shortenToWidth(edge.label.replace(/\s+/g, " "), 148, 11) : undefined;
-        const labelWidth = Math.max(40, textWidth(valueText, 13) + 14, textWidth(labelText ?? "", 11) + 14);
-        return { ...edge, path, labelX, labelY, labelWidth, labelHeight: labelText ? 38 : 22, valueText, labelText };
+        const labelText = edge.label ? shortenToWidth(edge.label.replace(/\s+/g, " "), labelMaxWidth, labelFontSize) : undefined;
+        const labelWidth = Math.max(40, textWidth(valueText, settings.fontSize) + 14, textWidth(labelText ?? "", labelFontSize) + 14);
+        return { ...edge, path: stylePolyline(path, settings.orthogonalEdges), labelX, labelY, labelWidth,
+            labelHeight: labelText ? settings.fontSize + labelFontSize + 14 : settings.fontSize + 9, valueText, labelText };
     });
     const width = Math.max(...nodes.map(node => node.x + node.width), ...positionedEdges.map(edge => edge.labelX + edge.labelWidth / 2 + 40)) + MARGIN;
     const height = Math.max(maxY, ...positionedEdges.map(edge => edge.labelY + edge.labelHeight / 2)) + MARGIN;
