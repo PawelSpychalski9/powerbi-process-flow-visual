@@ -66,6 +66,15 @@ async function main() {
         let size = await fits();
         assert.ok(size.scrollWidth <= size.width + 1, JSON.stringify(size));
         assert.ok(size.scrollHeight <= size.height + 1, JSON.stringify(size));
+        const groupBounds = await evaluate(`(() => {
+            const viewport=document.querySelector('.process-flow-viewport').getBoundingClientRect();
+            return [...document.querySelectorAll('.process-flow-group rect')].map(rect=>{
+                const box=rect.getBoundingClientRect();
+                return {inside:box.left>=viewport.left-1 && box.top>=viewport.top-1 && box.right<=viewport.right+1 && box.bottom<=viewport.bottom+1};
+            });
+        })()`);
+        assert.equal(groupBounds.length,2);
+        assert.ok(groupBounds.every(group=>group.inside));
         await evaluate('window.resizePreview(500, 250)');
         size = await fits();
         assert.ok(size.scrollWidth <= size.width + 1, JSON.stringify(size));
@@ -91,7 +100,8 @@ async function main() {
             edges:{useTheme:false,color:{solid:{color:'#006b50'}},width:4},
             labels:{fontSize:20,automaticValues:false,decimalPlaces:2,thousandsSeparator:false},
             layout:{horizontalSpacing:300,verticalSpacing:150},
-            canvas:{useTheme:false,background:{solid:{color:'#f5f7ff'}},textColor:{solid:{color:'#242448'}}}
+            canvas:{useTheme:false,background:{solid:{color:'#f5f7ff'}},textColor:{solid:{color:'#242448'}}},
+            flowGroups:{useTheme:false,background:{solid:{color:'#ddeeff'}},border:{solid:{color:'#3848a0'}},borderWidth:3,radius:16,padding:40,titleSize:20,titleColor:{solid:{color:'#3848a0'}}}
         }); document.querySelector('[aria-label="Fit graph to view"]').click()`);
         const custom = await evaluate(`(() => ({
             fill:document.querySelector('.process-flow-node rect').getAttribute('fill'),
@@ -100,7 +110,10 @@ async function main() {
             textSize:getComputedStyle(document.querySelector('.process-flow-value')).fontSize,
             background:getComputedStyle(document.querySelector('.process-flow')).backgroundColor,
             values:[...document.querySelectorAll('.process-flow-value')].map(text=>text.textContent),
-            cards:window.getPreviewFormattingModel().cards.length
+            cards:window.getPreviewFormattingModel().cards.length,
+            groupFill:document.querySelector('.process-flow-group rect').getAttribute('fill'),
+            groupBorder:document.querySelector('.process-flow-group rect').getAttribute('stroke'),
+            groupTitleSize:getComputedStyle(document.querySelector('.process-flow-group-title')).fontSize
         }))()`);
         assert.equal(custom.fill,'#fff3d6');
         assert.equal(custom.edge,'#006b50');
@@ -108,9 +121,13 @@ async function main() {
         assert.equal(custom.textSize,'20px');
         assert.equal(custom.background,'rgb(245, 247, 255)');
         assert.ok(custom.values.includes('-18.00'));
-        assert.equal(custom.cards,5);
+        assert.equal(custom.cards,6);
+        assert.equal(custom.groupFill,'#ddeeff');
+        assert.equal(custom.groupBorder,'#3848a0');
+        assert.equal(custom.groupTitleSize,'20px');
         const customScreenshot = await command('Page.captureScreenshot');
         fs.writeFileSync('.tmp/m03-custom.png',Buffer.from(customScreenshot.data,'base64'));
+        fs.writeFileSync('.tmp/flow-groups.png',Buffer.from(customScreenshot.data,'base64'));
         await evaluate(`window.setPreviewTheme('#ffff00','#000000','#ff0000',true)`);
         const contrast = await evaluate(`(() => ({
             fill:document.querySelector('.process-flow-node rect').getAttribute('fill'),
@@ -118,7 +135,10 @@ async function main() {
             edge:document.querySelector('.process-flow-edge').getAttribute('stroke'),
             text:getComputedStyle(document.querySelector('.process-flow-value')).fill,
             background:getComputedStyle(document.querySelector('.process-flow')).backgroundColor,
-            buttonBackground:getComputedStyle(document.querySelector('button')).backgroundColor
+            buttonBackground:getComputedStyle(document.querySelector('button')).backgroundColor,
+            groupFill:document.querySelector('.process-flow-group rect').getAttribute('fill'),
+            groupBorder:document.querySelector('.process-flow-group rect').getAttribute('stroke'),
+            groupTitle:getComputedStyle(document.querySelector('.process-flow-group-title')).fill
         }))()`);
         assert.equal(contrast.fill,'#000000');
         assert.equal(contrast.stroke,'#ffff00');
@@ -126,6 +146,9 @@ async function main() {
         assert.equal(contrast.text,'rgb(255, 255, 0)');
         assert.equal(contrast.background,'rgb(0, 0, 0)');
         assert.equal(contrast.buttonBackground,'rgb(0, 0, 0)');
+        assert.equal(contrast.groupFill,'#000000');
+        assert.equal(contrast.groupBorder,'#ffff00');
+        assert.equal(contrast.groupTitle,'rgb(255, 255, 0)');
         const contrastScreenshot = await command('Page.captureScreenshot');
         fs.writeFileSync('.tmp/m03-high-contrast.png',Buffer.from(contrastScreenshot.data,'base64'));
         await evaluate('window.setPreviewInteractions(false)');
@@ -146,7 +169,16 @@ async function main() {
         assert.equal(await evaluate('document.querySelector("[role=alert]") !== null'),true);
         await evaluate('window.setPreviewState("ready")');
         assert.equal(await evaluate('document.querySelectorAll(".process-flow-node").length'),8);
-        console.log('Browser checks passed: zoom, Fit, resizing, formatting, theme changes, high contrast, disabled interactions, empty/error states, and recovery.');
+        await evaluate('window.setPreviewObjects({edges:{rightAngles:true}})');
+        const angularPaths=await evaluate('[...document.querySelectorAll(".process-flow-edge")].map(edge=>edge.getAttribute("d"))');
+        assert.ok(angularPaths.every(path=>!/[CQ]/.test(path)));
+        assert.equal(await evaluate('document.querySelectorAll(".process-flow-group").length'),2);
+        const angularScreenshot=await command('Page.captureScreenshot');
+        fs.writeFileSync('.tmp/right-angle-connections.png',Buffer.from(angularScreenshot.data,'base64'));
+        await evaluate('window.setPreviewObjects({edges:{rightAngles:false}})');
+        const smoothPaths=await evaluate('[...document.querySelectorAll(".process-flow-edge")].map(edge=>edge.getAttribute("d"))');
+        assert.ok(smoothPaths.some(path=>/[CQ]/.test(path)));
+        console.log('Browser checks passed: Flow Groups, zoom, Fit, resizing, formatting, theme changes, high contrast, disabled interactions, empty/error states, and recovery.');
     } finally {
         if (command && socket?.readyState === WebSocket.OPEN) await command('Browser.close').catch(() => {});
         socket?.close();

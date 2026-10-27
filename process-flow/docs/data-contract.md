@@ -1,6 +1,6 @@
 # Data contract and duplicate policy
 
-The eight roles and their types are documented in
+The original eight roles plus optional `Flow Group` and their types are documented in
 [the sample schema](../../example_data/README.md). Assign at most one field to
 each role. Source, Target, and Value are required; the parser validates this at
 runtime. Mapping conditions only constrain the maximum field count, so incomplete
@@ -46,3 +46,9 @@ See Microsoft's [data view mapping documentation](https://learn.microsoft.com/en
 The checked-in fixture has eight nodes (`A`–`H`), nine edges, nine unique Tooltip
 IDs, and only finite negative values. Its branches are B → C/D and E → F/G; its
 merges are C/D → E and F/G → H. Node H is target-only and uses its ID.
+
+M3A appends optional `Flow Group` without changing the original columns. Source
+membership is independent from edge `Group`. Blank values are ungrouped; names
+are trimmed; conflicting Source assignments leave the node ungrouped with a
+warning. Membership is resolved only from valid received Source rows. See
+[Flow Groups](flow-groups.md) for layout and report-upgrade details.

@@ -8,6 +8,7 @@ export interface GraphSettings {
     edgeUseTheme: boolean;
     edgeColor: string;
     edgeWidth: number;
+    orthogonalEdges: boolean;
     fontSize: number;
     automaticValues: boolean;
     decimalPlaces: number;
@@ -17,6 +18,16 @@ export interface GraphSettings {
     canvasUseTheme: boolean;
     background: string;
     textColor: string;
+    flowGroupUseTheme: boolean;
+    flowGroupShowBackground: boolean;
+    flowGroupBackground: string;
+    flowGroupOpacity: number;
+    flowGroupBorder: string;
+    flowGroupBorderWidth: number;
+    flowGroupRadius: number;
+    flowGroupPadding: number;
+    flowGroupTitleSize: number;
+    flowGroupTitleColor: string;
 }
 
 type Definition = {
@@ -36,7 +47,8 @@ export const formattingCards: { name: string; label: string; settings: Definitio
     { name: "edges", label: "Connections", settings: [
         { key: "edgeUseTheme", property: "useTheme", label: "Use theme color", kind: "boolean", fallback: true },
         { key: "edgeColor", property: "color", label: "Color", kind: "color", fallback: "#1670a5" },
-        { key: "edgeWidth", property: "width", label: "Line width", kind: "number", fallback: 1.8, min: 0.5, max: 6 }
+        { key: "edgeWidth", property: "width", label: "Line width", kind: "number", fallback: 1.8, min: 0.5, max: 6 },
+        { key: "orthogonalEdges", property: "rightAngles", label: "Right-angle connections", kind: "boolean", fallback: false }
     ] },
     { name: "labels", label: "Labels and values", settings: [
         { key: "fontSize", property: "fontSize", label: "Font size", kind: "number", fallback: 13, min: 10, max: 24, integer: true },
@@ -52,6 +64,18 @@ export const formattingCards: { name: string; label: string; settings: Definitio
         { key: "canvasUseTheme", property: "useTheme", label: "Use theme colors", kind: "boolean", fallback: true },
         { key: "background", property: "background", label: "Background color", kind: "color", fallback: "#ffffff" },
         { key: "textColor", property: "textColor", label: "Text color", kind: "color", fallback: "#242424" }
+    ] },
+    { name: "flowGroups", label: "Flow Groups", settings: [
+        { key: "flowGroupUseTheme", property: "useTheme", label: "Use theme colors", kind: "boolean", fallback: true },
+        { key: "flowGroupShowBackground", property: "showBackground", label: "Show container backgrounds", kind: "boolean", fallback: true },
+        { key: "flowGroupBackground", property: "background", label: "Background color", kind: "color", fallback: "#1670a5" },
+        { key: "flowGroupOpacity", property: "opacity", label: "Background opacity (%)", kind: "number", fallback: 8, min: 0, max: 100, integer: true },
+        { key: "flowGroupBorder", property: "border", label: "Border color", kind: "color", fallback: "#1670a5" },
+        { key: "flowGroupBorderWidth", property: "borderWidth", label: "Border width", kind: "number", fallback: 1.5, min: 0, max: 6 },
+        { key: "flowGroupRadius", property: "radius", label: "Corner radius", kind: "number", fallback: 8, min: 0, max: 40 },
+        { key: "flowGroupPadding", property: "padding", label: "Container padding", kind: "number", fallback: 24, min: 8, max: 100, integer: true },
+        { key: "flowGroupTitleSize", property: "titleSize", label: "Title font size", kind: "number", fallback: 14, min: 10, max: 30, integer: true },
+        { key: "flowGroupTitleColor", property: "titleColor", label: "Title color", kind: "color", fallback: "#242424" }
     ] }
 ];
 
@@ -84,6 +108,9 @@ export interface Appearance {
     edgeColor: string;
     active: string;
     highContrast: boolean;
+    groupBackground: string;
+    groupBorder: string;
+    groupTitle: string;
 }
 
 export function resolveAppearance(settings: GraphSettings, palette?: powerbi.extensibility.ISandboxExtendedColorPalette, accent = "#1670a5"): Appearance {
@@ -91,7 +118,8 @@ export function resolveAppearance(settings: GraphSettings, palette?: powerbi.ext
     const background = palette?.background?.value ?? "#ffffff";
     if (palette?.isHighContrast) {
         return { foreground, background, nodeFill: background, nodeBorder: foreground, edgeColor: foreground,
-            active: palette.foregroundSelected?.value ?? foreground, highContrast: true };
+            active: palette.foregroundSelected?.value ?? foreground, highContrast: true,
+            groupBackground: background, groupBorder: foreground, groupTitle: foreground };
     }
     return {
         foreground: settings.canvasUseTheme ? foreground : settings.textColor,
@@ -99,7 +127,10 @@ export function resolveAppearance(settings: GraphSettings, palette?: powerbi.ext
         nodeFill: settings.nodeUseTheme ? background : settings.nodeFill,
         nodeBorder: settings.nodeUseTheme ? accent : settings.nodeBorder,
         edgeColor: settings.edgeUseTheme ? accent : settings.edgeColor,
-        active: accent, highContrast: false
+        active: accent, highContrast: false,
+        groupBackground: settings.flowGroupUseTheme ? accent : settings.flowGroupBackground,
+        groupBorder: settings.flowGroupUseTheme ? accent : settings.flowGroupBorder,
+        groupTitle: settings.flowGroupUseTheme ? foreground : settings.flowGroupTitleColor
     };
 }
 
@@ -112,7 +143,8 @@ export function buildFormattingModel(settings: GraphSettings, highContrast = fal
             const common = { uid: `${card.name}-${definition.property}`, displayName: definition.label };
             const value = settings[definition.key];
             const colorDisabled = highContrast || (card.name === "nodes" && settings.nodeUseTheme) ||
-                (card.name === "edges" && settings.edgeUseTheme) || (card.name === "canvas" && settings.canvasUseTheme);
+                (card.name === "edges" && settings.edgeUseTheme) || (card.name === "canvas" && settings.canvasUseTheme) ||
+                (card.name === "flowGroups" && settings.flowGroupUseTheme);
             if (definition.kind === "color") {
                 return { ...common, disabled: colorDisabled, control: { type: powerbi.visuals.FormattingComponent.ColorPicker,
                     properties: { descriptor, value: { value: value as string } } } };

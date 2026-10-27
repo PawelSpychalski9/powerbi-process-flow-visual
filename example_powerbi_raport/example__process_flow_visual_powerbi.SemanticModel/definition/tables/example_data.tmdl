@@ -1,0 +1,88 @@
+table example_data
+	lineageTag: 8fe2881a-ca09-4643-b4c0-7c85bb224344
+
+	column Source
+		dataType: string
+		lineageTag: d7ad1353-cdc2-406d-a675-6c5c47b20057
+		summarizeBy: none
+		sourceColumn: Source
+
+		annotation SummarizationSetBy = Automatic
+
+	column Target
+		dataType: string
+		lineageTag: 794ad5ed-2bdc-4fa1-b198-23604a82136c
+		summarizeBy: none
+		sourceColumn: Target
+
+		annotation SummarizationSetBy = Automatic
+
+	column Value
+		dataType: int64
+		formatString: 0
+		lineageTag: 8626a64b-9c5d-458f-9786-ad449cad2120
+		summarizeBy: sum
+		sourceColumn: Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tooltip ID'
+		dataType: string
+		lineageTag: 4dcb53ee-8d46-4738-9b25-d83a9c403282
+		summarizeBy: none
+		sourceColumn: Tooltip ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Node Title'
+		dataType: string
+		lineageTag: a1bf24c5-7925-44f2-ac8c-edbc04fb54d5
+		summarizeBy: none
+		sourceColumn: Node Title
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Node Description'
+		dataType: string
+		lineageTag: 975a7d75-a94c-4683-9807-00597b209e50
+		summarizeBy: none
+		sourceColumn: Node Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column Label
+		dataType: string
+		lineageTag: fdc77f69-74a8-494f-bf53-627d1d2f1879
+		summarizeBy: none
+		sourceColumn: Label
+
+		annotation SummarizationSetBy = Automatic
+
+	column Group
+		dataType: string
+		lineageTag: 04f63662-03a9-4d2a-9b69-ba5e9e087355
+		summarizeBy: none
+		sourceColumn: Group
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Flow Group'
+		dataType: string
+		lineageTag: 59b15550-82c1-467b-9a69-e5c3f7916cb2
+		summarizeBy: none
+		sourceColumn: Flow Group
+
+		annotation SummarizationSetBy = Automatic
+
+	partition example_data = m
+		mode: import
+		source =
+				let
+				    Źródło = Csv.Document(File.Contents("C:\Users\Pawel\Desktop\open-source\repos\powerbi-process-flow-visual\example_data\example_data.csv"),[Delimiter=",", Columns=9, Encoding=1250, QuoteStyle=QuoteStyle.None]),
+				    #"Nagłówki o podwyższonym poziomie" = Table.PromoteHeaders(Źródło, [PromoteAllScalars=true]),
+				    #"Zmieniono typ" = Table.TransformColumnTypes(#"Nagłówki o podwyższonym poziomie",{{"Source", type text}, {"Target", type text}, {"Value", Int64.Type}, {"Tooltip ID", type text}, {"Node Title", type text}, {"Node Description", type text}, {"Label", type text}, {"Group", type text}, {"Flow Group", type text}})
+				in
+				    #"Zmieniono typ"
+
+	annotation PBI_ResultType = Table
+

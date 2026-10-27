@@ -26,7 +26,7 @@ function viewFixture() {
 test('format cards expose every capabilities property with matching typed controls and reset descriptors', () => {
     const capabilities = JSON.parse(fs.readFileSync('capabilities.json','utf8'));
     const model = buildFormattingModel(readSettings());
-    assert.equal(model.cards.length,5);
+    assert.equal(model.cards.length,6);
     const uids = [];
     for (const card of model.cards) {
         uids.push(card.uid);
@@ -45,7 +45,7 @@ test('format cards expose every capabilities property with matching typed contro
     assert.equal(new Set(uids).size,uids.length);
     assert.equal(model.cards.reduce((count,card)=>count+card.groups[0].slices.length,0),
         Object.values(capabilities.objects).reduce((count,object)=>count+Object.keys(object.properties).length,0));
-    assert.equal(formattingCards.length,5);
+    assert.equal(formattingCards.length,6);
 });
 
 test('metadata values are clamped and malformed colors and non-finite settings safely fall back', () => {
@@ -123,7 +123,7 @@ test('format-only updates and resize retain settings; resetting metadata restore
     assert.equal(root.querySelector('.process-flow-edge').getAttribute('stroke-width'),'5');
     update(sample());
     assert.equal(root.querySelector('.process-flow-node rect').getAttribute('fill'),'#f0f3ff');
-    assert.equal(view.getFormattingModel().cards.length,5);
+    assert.equal(view.getFormattingModel().cards.length,6);
 });
 
 test('host theme and high-contrast changes recolor live SVG and enforce visible outlines', () => {

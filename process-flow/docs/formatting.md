@@ -1,6 +1,6 @@
 # M03 — Formatting and usability
 
-The visual exposes five cards in Power BI's Format pane. Settings are stored in
+M03 introduced five cards; M3A adds the sixth, **Flow Groups**. Settings are stored in
 the visual's report metadata and are read on each host update. The native API
 formatting model supplies stable property descriptors and reset-to-default
 descriptors. The SDK/API versions and visual GUID are unchanged.
@@ -8,12 +8,17 @@ descriptors. The SDK/API versions and visual GUID are unchanged.
 | Card | Settings | Defaults |
 | --- | --- | --- |
 | Nodes | Theme colors, fill, border color, border width | Theme enabled; 1.6 px border |
-| Connections | Theme color, color, line width | Theme enabled; 1.8 px line |
+| Connections | Theme color, color, line width, right-angle connections | Theme enabled; 1.8 px line; smooth connections |
 | Labels and values | Font size, automatic number precision, decimal places, thousands separator | 13 px; automatic precision; grouping enabled |
 | Spacing | Horizontal and vertical spacing | 180 px and 76 px |
 | Canvas | Theme colors, background and text colors | Theme enabled |
+| Flow Groups | Background visibility, theme/custom colors, opacity, border, corner radius, padding, title | Theme enabled; 8% background opacity; 24 px padding |
 
 Disable the relevant **Use theme colors** switch to edit its custom colors.
+Under **Connections**, enable **Right-angle connections** for 90-degree bends.
+Disable it for smooth curves and rounded corners. The switch applies to internal
+and cross-group routes, including cycles and self-loops, and preserves labels,
+signed values, arrowheads, and node positions.
 Disable **Automatic number precision** to choose 0–8 decimal places. Formatting
 uses the host locale, retains negative signs, and never changes the underlying
 numeric values or arrow directions. This milestone does not interpret arbitrary
@@ -56,7 +61,7 @@ visual. Use the existing sample report or follow [the baseline checklist](valida
 
 1. **Before:** confirm the default sample still has eight nodes, nine edges, and
    B → C = -18. Check the previously accepted zoom/Fit controls.
-2. Open **Format visual** and confirm the five cards listed above appear.
+2. Open **Format visual** and confirm the six cards listed above appear.
 3. Under Nodes, disable Use theme colors, set a light fill and dark border, and
    change border width from 1.6 to 3. Verify the actual nodes change.
 4. Under Connections, disable Use theme color, set a different color, and increase
