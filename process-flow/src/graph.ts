@@ -4,6 +4,8 @@ export const roles = ["source", "target", "value", "tooltipId", "nodeTitle", "no
 export type Role = typeof roles[number];
 export const MAX_EDGES = 1000;
 export const MAX_NODES = 500;
+export const MAX_TEXT_LENGTH = 4096;
+export const MAX_TEXT_CHARACTERS = 1_000_000;
 
 export interface GraphNode {
     id: string;
@@ -50,9 +52,12 @@ export function parseGraph(dataView?: powerbi.DataView): GraphResult {
     };
     const table = dataView?.table;
     if (!table) return base;
+    if (!Array.isArray(table.columns) || (table.rows != null && !Array.isArray(table.rows))) {
+        return { ...base, status: "invalid", message: "Invalid table data. Reassign the fields or refresh the visual." };
+    }
     const columns = new Map<Role, number>();
     for (const role of roles) {
-        const matches = table.columns.map((column, index) => column.roles?.[role] ? index : -1).filter(index => index >= 0);
+        const matches = table.columns.map((column, index) => column?.roles?.[role] ? index : -1).filter(index => index >= 0);
         if (matches.length > 1) return { ...base, status: "invalid", message: `Assign only one field to ${role}.` };
         if (matches.length === 1) columns.set(role, matches[0]);
     }
@@ -64,6 +69,19 @@ export function parseGraph(dataView?: powerbi.DataView): GraphResult {
         return { ...base, status: "invalid", message: `This graph is incomplete or exceeds ${MAX_EDGES} edges. Filter the report to a smaller graph.` };
     }
     if (!rows.length) return { ...base, message: "No connections match the current filters." };
+    let characters = 0;
+    for (const row of rows) {
+        if (!Array.isArray(row)) continue;
+        for (const index of columns.values()) {
+            const cell = row[index];
+            if (typeof cell !== "string") continue;
+            if (cell.length > MAX_TEXT_LENGTH) return { ...base, status: "invalid",
+                message: `A text field exceeds ${MAX_TEXT_LENGTH} characters. Shorten the source text; IDs are never truncated or merged.` };
+            characters += cell.length;
+            if (characters > MAX_TEXT_CHARACTERS) return { ...base, status: "invalid",
+                message: `This graph exceeds the ${MAX_TEXT_CHARACTERS} character text budget. Filter the report or shorten source text.` };
+        }
+    }
     const nodes = new Map<string, GraphNode>();
     const titles = new Map<string, Set<string>>();
     const descriptions = new Map<string, Set<string>>();
@@ -72,6 +90,7 @@ export function parseGraph(dataView?: powerbi.DataView): GraphResult {
     const warnings = new Set<string>();
     const edgeOccurrences = new Map<string, number>();
     rows.forEach((row, rowIndex) => {
+        if (!Array.isArray(row)) { base.skippedRows++; return; }
         const get = (role: Role): powerbi.PrimitiveValue | undefined => {
             const index = columns.get(role);
             return index === undefined ? undefined : row[index];

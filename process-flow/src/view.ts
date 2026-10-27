@@ -24,9 +24,13 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
     }
 
     public update(options: powerbi.extensibility.visual.VisualUpdateOptions): void {
-        this.disposeTooltips();
         this.options.host.eventService.renderingStarted(options);
         try {
+            this.disposeTooltips();
+            this.disposeTooltips = () => undefined;
+            if (![options.viewport.width, options.viewport.height].every(value => Number.isFinite(value) && value >= 0)) {
+                throw new Error("Invalid visual viewport.");
+            }
             if (options.type & powerbi.VisualUpdateType.Data) {
                 this.dataView = options.dataViews?.[0];
                 this.result = parseGraph(this.dataView);
@@ -56,9 +60,14 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
             this.interactions.update(this.result.edges, identities, this.options.host.hostCapabilities?.allowInteractions !== false);
             this.options.host.eventService.renderingFinished(options);
         } catch {
+            // Detach hover handlers even if rendering or selection setup failed halfway through.
+            try { this.disposeTooltips(); } catch { /* A failed host tooltip service must not block recovery. */ }
+            this.disposeTooltips = () => undefined;
+            this.result = parseGraph();
+            this.interactions.reset();
             this.container.replaceChildren();
             this.container.setAttribute("role", "alert");
-            this.container.textContent = "Unable to display this process graph. Check the assigned fields and filter the data.";
+            this.container.textContent = "Unable to display this process graph. Check the assigned fields, filter to a smaller graph, and refresh the visual. If this continues, reimport the visual.";
             this.options.host.eventService.renderingFailed(options, "Unable to render process graph.");
         }
     }

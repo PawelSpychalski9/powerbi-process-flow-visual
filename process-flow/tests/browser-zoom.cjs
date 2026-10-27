@@ -41,12 +41,12 @@ async function main() {
         });
         command = (method, params = {}) => new Promise((resolve, reject) => {
             const id = ++sequence;
-            const timeout = setTimeout(() => {pending.delete(id); reject(new Error(`Timed out: ${method}`));}, 10000);
+            const timeout = setTimeout(() => {pending.delete(id); reject(new Error(`Timed out: ${method}`));}, process.argv.includes('--profile') ? 120000 : 10000);
             pending.set(id, {resolve, reject, timeout});
             socket.send(JSON.stringify({id, method, params}));
         });
         const evaluate = async expression => {
-            const result = await command('Runtime.evaluate', {expression, returnByValue: true});
+            const result = await command('Runtime.evaluate', {expression, returnByValue: true, awaitPromise: true});
             if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails));
             return result.result.value;
         };
@@ -54,6 +54,23 @@ async function main() {
         for (let attempt = 0; attempt < 100; attempt++) {
             if (await evaluate('typeof window.resizePreview === "function"')) break;
             await delay(100);
+        }
+        if (process.argv.includes('--profile')) {
+            const report = await evaluate('window.profileGraphs()');
+            const os = require('node:os');
+            report.environment = {date:new Date().toISOString(),node:process.version,platform:process.platform,
+                cpu:os.cpus()[0].model,logicalProcessors:os.cpus().length};
+            fs.writeFileSync('.tmp/performance.json', JSON.stringify(report,null,2));
+            const {stressData,stressCases}=require('./stress-fixtures.cjs');
+            fs.mkdirSync('.tmp/stress-data',{recursive:true});
+            const header='Source,Target,Value,Tooltip ID,Node Title,Node Description,Label,Group,Flow Group';
+            const cell=value=>typeof value==='string' ? '"'+value.replace(/"/g,'""')+'"' : value ?? '';
+            for (const [kind,count] of stressCases) fs.writeFileSync(`.tmp/stress-data/${kind}-${count}.csv`,
+                header+'\n'+stressData(kind,count).table.rows.map(row=>row.map(cell).join(',')).join('\n')+'\n');
+            console.table(report.results.map(row=>({kind:row.kind,nodes:row.nodes,edges:row.edges,
+                ...Object.fromEntries(Object.entries(row.median).map(([k,v])=>[k,Number(v.toFixed(2))]))})));
+            console.log('Saved .tmp/performance.json. Mock host; frameMs includes two animation-frame waits, not a GPU paint measurement.');
+            return;
         }
         await evaluate('window.resizePreview(900, 400)');
         assert.equal(await evaluate('document.querySelector("output").textContent'), '100%');

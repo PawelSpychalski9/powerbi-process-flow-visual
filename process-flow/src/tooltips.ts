@@ -15,10 +15,13 @@ export function edgeIdentities(host: powerbi.extensibility.visual.IVisualHost, t
 }
 
 export function edgeTooltipItems(edge: GraphEdge, locale?: string): powerbi.extensibility.VisualTooltipDataItem[] {
+    let value: string;
+    try { value = edge.value.toLocaleString(locale, { maximumSignificantDigits: 17 }); }
+    catch { value = String(edge.value); }
     const items = [
         { displayName: "Source", value: edge.source },
         { displayName: "Target", value: edge.target },
-        { displayName: "Value", value: edge.value.toLocaleString(locale, { maximumSignificantDigits: 17 }) }
+        { displayName: "Value", value }
     ];
     const optional: [string, string | undefined][] = [["Label", edge.label], ["Group", edge.group], ["Tooltip ID", edge.tooltipId]];
     for (const [displayName, value] of optional) {
@@ -33,16 +36,25 @@ export function bindEdgeTooltips(root: HTMLElement, service: powerbi.extensibili
     if (!service) return () => undefined;
     const byId = new Map(edges.map(edge => [edge.id, edge]));
     let active: string | undefined;
+    const failed = (): void => {
+        if (root.querySelector(".process-flow-tooltip-error")) return;
+        const message = root.ownerDocument.createElement("div");
+        message.className = "process-flow-tooltip-error process-flow-warning";
+        message.setAttribute("role", "status");
+        message.textContent = "Power BI tooltips are temporarily unavailable. Try hovering again or refresh the visual.";
+        root.appendChild(message);
+    };
     const targetId = (target: EventTarget | null): string | undefined => {
         const element = target as Element | null;
         const match = element?.closest?.("[data-edge-id]");
         return match && root.contains(match) ? match.getAttribute("data-edge-id") ?? undefined : undefined;
     };
     const hide = (): void => {
-        if (active !== undefined) service.hide({ immediately: true, isTouchEvent: false });
+        try { if (active !== undefined) service.hide({ immediately: true, isTouchEvent: false }); }
+        catch { failed(); }
         active = undefined;
     };
-    const hover = (event: PointerEvent): void => {
+    const show = (event: PointerEvent): void => {
         // Touch navigation is left to the host; pointer hover supports mouse and pen.
         if (event.pointerType === "touch") return;
         const id = targetId(event.target);
@@ -56,6 +68,11 @@ export function bindEdgeTooltips(root: HTMLElement, service: powerbi.extensibili
         };
         if (active === id) service.move(options);
         else { hide(); service.show(options); active = id; }
+        root.querySelector(".process-flow-tooltip-error")?.remove();
+    };
+    const hover = (event: PointerEvent): void => {
+        try { show(event); }
+        catch { active = undefined; failed(); }
     };
     const leave = (event: PointerEvent): void => {
         if (targetId(event.relatedTarget) !== active) hide();

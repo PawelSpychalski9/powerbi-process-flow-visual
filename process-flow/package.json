@@ -19,7 +19,8 @@
     "typecheck": "tsc --noEmit",
     "test": "tsc -p tsconfig.tests.json && node --test tests/*.test.cjs",
     "preview": "tsc -p tsconfig.tests.json && node tests/preview.cjs",
-    "test:browser": "npm run preview && node tests/browser-zoom.cjs"
+    "test:browser": "npm run preview && node tests/browser-zoom.cjs",
+    "profile": "npm run preview && node tests/browser-zoom.cjs --profile"
   },
   "dependencies": {
     "@types/d3": "7.4.3",
