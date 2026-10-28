@@ -263,7 +263,18 @@ async function main() {
         await clickPoint(await badgeFor('C'));
         await clickPoint(await badgeFor('C'),0,'right');
         assert.equal(await evaluate('window.previewSelectionCalls.length'),callsBefore);
-        console.log('Browser checks passed: formatting, routing, zoom/Fit, tooltips, real pointer selection, Ctrl-click, node selection, deselection, context menus, host restoration, high contrast and interaction permissions (mock host).');
+        await evaluate(`window.setPreviewInteractions(true);window.setPreviewTheme('#202830','#ffffff','#1670a5');
+            window.setPreviewObjects({flowGroups:{opacity:40,$instances:{
+                ['flowGroup:'+JSON.stringify('Processing')]:{useTheme:false,background:{solid:{color:'#ffcc00'}},border:{solid:{color:'#a03010'}},titleColor:{solid:{color:'#401000'}}}
+            }}})`);
+        assert.equal(await evaluate(`document.querySelector('[data-flow-group="Processing"] rect').getAttribute('fill')`),'#ffcc00');
+        assert.equal(await evaluate(`document.querySelector('[data-flow-group="Output"] rect').getAttribute('fill')`),'#1670a5');
+        assert.equal(await evaluate(`window.getPreviewFormattingModel().cards.find(c=>c.uid==='flowGroups-card').groups.length`),3);
+        await evaluate(`window.setPreviewTheme('#ffff00','#000000','#ff0000',true)`);
+        assert.equal(await evaluate(`document.querySelector('[data-flow-group="Processing"] rect').getAttribute('fill')`),'#000000');
+        await evaluate(`window.setPreviewTheme('#202830','#ffffff','#1670a5');window.resizePreview(900,400)`);
+        assert.equal(await evaluate(`document.querySelector('[data-flow-group="Processing"] rect').getAttribute('fill')`),'#ffcc00');
+        console.log('Browser checks passed: formatting, routing, zoom/Fit, tooltips, selection, context menus, host restoration, high contrast, interaction permissions and individual Flow Group colors (mock host).');
     } finally {
         if (command && socket?.readyState === WebSocket.OPEN) await command('Browser.close').catch(() => {});
         socket?.close();
