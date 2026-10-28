@@ -4,6 +4,36 @@ Assign the optional Text field **Flow Group** to enclose Source nodes in larger
 titled rectangles. Edges continue to connect individual nodes. The existing
 **Group** field still categorizes edges; it never assigns node membership.
 
+## Individual container colors
+
+The **Flow Groups** Format card includes one additional section per visible group
+(for example **Processing** and **Output**). In a group's section, switch **Use
+shared colors** off to set its **Background color**, **Border color** and **Title
+color** separately. The shared controls still apply to groups without overrides.
+Background opacity, visibility, border width, padding and geometry remain shared;
+increase the shared opacity if a custom background looks too faint (default 8%).
+
+Switch **Use shared colors** back on to inherit the shared settings while keeping
+the saved custom colors available. Resetting the Flow Groups card removes the
+overrides for the displayed groups. High contrast overrides all custom colors and
+disables these controls without discarding saved custom settings.
+
+Native formatting descriptors use named object instances in `flowGroups.$instances`,
+keyed by the normalized, case-sensitive group name rather than row indexes. Filtering
+a group out hides its controls; restoring it reads the saved settings again.
+Renaming a group creates a new formatting identity; colors are not transferred
+automatically. No row-selection identities or data roles are changed.
+
+After importing the updated package, assign Flow Group, give Processing and Output
+different colors, resize/refresh, and toggle shared colors and high contrast. Save,
+close and reopen the report to verify native Power BI persistence. DOM/browser
+tests cover metadata loading and rendering with a mock host; the actual Format
+pane editing/save round trip must be verified in Power BI.
+
+See Microsoft's [formatting object documentation](https://learn.microsoft.com/en-us/power-bi/developer/visuals/objects-properties)
+for native descriptors and the installed API's `DataViewObject.$instances` for
+named object instances.
+
 ## Membership and compatibility
 
 - Non-empty group names are trimmed. One container is created for each distinct

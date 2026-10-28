@@ -1,4 +1,5 @@
 const {ProcessFlowView} = require('../.tmp/tests/view.js');
+require('./profile-browser.cjs');
 const {selectionHost, identity} = require('./selection-host.cjs');
 const selection = selectionHost();
 window.previewSelectionCalls = selection.calls;

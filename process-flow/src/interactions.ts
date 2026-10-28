@@ -5,6 +5,7 @@ import { GraphEdge } from "./graph";
 export class GraphInteractions {
     private edges: GraphEdge[] = [];
     private identities = new Map<string, powerbi.visuals.ISelectionId>();
+    private nodeSelections = new Map<string, powerbi.visuals.ISelectionId[]>();
     private selected: powerbi.visuals.ISelectionId[] = [];
     private allowed = true;
     private destroyed = false;
@@ -27,6 +28,17 @@ export class GraphInteractions {
         this.generation++;
         this.edges = edges;
         this.identities = identities;
+        const incident = new Map<string, Map<string, powerbi.visuals.ISelectionId>>();
+        const incomplete = new Set<string>();
+        for (const edge of edges) {
+            for (const node of new Set([edge.source, edge.target])) {
+                if (!incident.has(node)) incident.set(node, new Map());
+                const id = identities.get(edge.id);
+                if (id) incident.get(node)!.set(id.getKey(), id);
+                else incomplete.add(node);
+            }
+        }
+        this.nodeSelections = new Map([...incident].map(([node, ids]) => [node, incomplete.has(node) ? [] : [...ids.values()]]));
         this.allowed = allowed;
         this.selected = (this.manager?.getSelectionIds() ?? []) as powerbi.visuals.ISelectionId[];
         this.paint();
@@ -38,11 +50,7 @@ export class GraphInteractions {
     }
 
     private nodeIdentities(nodeId: string): powerbi.visuals.ISelectionId[] {
-        const incident = this.edges.filter(edge => edge.source === nodeId || edge.target === nodeId);
-        const ids = incident.map(edge => this.identities.get(edge.id));
-        // Avoid sending a misleading partial node selection when some rows have no identity.
-        return ids.length && ids.every(id => id !== undefined) ?
-            [...new Map(ids.map(id => [id!.getKey(), id!])).values()] : [];
+        return this.nodeSelections.get(nodeId) ?? [];
     }
 
     private click = (event: MouseEvent): void => {
@@ -100,8 +108,9 @@ export class GraphInteractions {
     private paint(): void {
         if (this.destroyed) return;
         const selectedEdges = new Set<string>();
+        const selectedKeys = new Set(this.selected.map(id => id.getKey()));
         for (const [edgeId, identity] of this.identities) {
-            if (this.selected.some(id => id.hasIdentity() && (id.equals(identity) || id.includes(identity)))) selectedEdges.add(edgeId);
+            if (selectedKeys.has(identity.getKey()) || this.selected.some(id => id.hasIdentity() && id.includes(identity))) selectedEdges.add(edgeId);
         }
         const selectedNodes = new Set(this.edges.filter(edge => selectedEdges.has(edge.id)).flatMap(edge => [edge.source, edge.target]));
         const showSelection = selectedEdges.size > 0;
@@ -122,5 +131,14 @@ export class GraphInteractions {
         this.root.removeEventListener("click", this.click);
         this.root.removeEventListener("contextmenu", this.contextMenu);
         // The SDK has no unregister API; the registered callback becomes inert on destroy.
+    }
+
+    public reset(): void {
+        this.generation++;
+        this.edges = [];
+        this.identities.clear();
+        this.nodeSelections.clear();
+        this.selected = [];
+        this.allowed = false;
     }
 }

@@ -68,6 +68,7 @@ npm.cmd run lint
 npm.cmd run typecheck
 npm.cmd test
 npm.cmd run test:browser
+npm.cmd run profile
 npm.cmd run package
 ```
 
@@ -82,3 +83,6 @@ See [edge tooltips and related details](process-flow/docs/tooltips.md) for the
 sample detail table, relationship setup, and report-page tooltip checks.
 See [report interactions](process-flow/docs/interactions.md) for selection behavior,
 cross-filter tests, context menus, and the table-mapping highlight limitation.
+See [robustness and performance](process-flow/docs/robustness-and-performance.md)
+for difficult-data behavior, safety limits, repeatable profiling and measured
+large-graph results. `profile` also generates synthetic CSVs for Power BI testing.

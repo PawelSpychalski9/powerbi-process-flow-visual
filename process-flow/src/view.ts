@@ -4,6 +4,7 @@ import { createZoomState, renderGraph } from "./renderer";
 import { buildFormattingModel, readSettings, resolveAppearance } from "./formatting";
 import { bindEdgeTooltips, edgeIdentities } from "./tooltips";
 import { GraphInteractions } from "./interactions";
+import { addGroupColorFormatting, GroupColors, readGroupColors } from "./groupColors";
 
 /** Host lifecycle kept separate from the stylesheet entry point for DOM tests. */
 export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
@@ -14,6 +15,7 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
     private readonly zoom = createZoomState();
     private dataView?: powerbi.DataView;
     private settings = readSettings();
+    private groupColors: GroupColors[] = [];
     private disposeTooltips: () => void = () => undefined;
     private readonly interactions: GraphInteractions;
 
@@ -24,9 +26,13 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
     }
 
     public update(options: powerbi.extensibility.visual.VisualUpdateOptions): void {
-        this.disposeTooltips();
         this.options.host.eventService.renderingStarted(options);
         try {
+            this.disposeTooltips();
+            this.disposeTooltips = () => undefined;
+            if (![options.viewport.width, options.viewport.height].every(value => Number.isFinite(value) && value >= 0)) {
+                throw new Error("Invalid visual viewport.");
+            }
             if (options.type & powerbi.VisualUpdateType.Data) {
                 this.dataView = options.dataViews?.[0];
                 this.result = parseGraph(this.dataView);
@@ -39,6 +45,10 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
             }
             this.settings = readSettings(this.dataView?.metadata.objects);
             const accent = this.options.host.colorPalette.getColor("process-flow").value;
+            const appearance = resolveAppearance(this.settings, this.options.host.colorPalette, accent);
+            // Read saved colors independently of high contrast so the picker values survive theme changes.
+            const normalAppearance = resolveAppearance(this.settings, { ...this.options.host.colorPalette, isHighContrast: false }, accent);
+            this.groupColors = readGroupColors(this.result.nodes, this.dataView?.metadata.objects, normalAppearance);
             renderGraph(this.container, this.result, {
                 width: options.viewport.width,
                 height: options.viewport.height,
@@ -47,7 +57,8 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
                 locale: this.options.host.locale,
                 zoom: this.zoom,
                 settings: this.settings,
-                appearance: resolveAppearance(this.settings, this.options.host.colorPalette, accent),
+                appearance,
+                groupColors: new Map(this.groupColors.map(group => [group.name, group])),
                 allowInteractions: this.options.host.hostCapabilities?.allowInteractions !== false
             });
             const identities = edgeIdentities(this.options.host, this.dataView?.table, this.result.edges);
@@ -56,15 +67,23 @@ export class ProcessFlowView implements powerbi.extensibility.visual.IVisual {
             this.interactions.update(this.result.edges, identities, this.options.host.hostCapabilities?.allowInteractions !== false);
             this.options.host.eventService.renderingFinished(options);
         } catch {
+            // Detach hover handlers even if rendering or selection setup failed halfway through.
+            try { this.disposeTooltips(); } catch { /* A failed host tooltip service must not block recovery. */ }
+            this.disposeTooltips = () => undefined;
+            this.result = parseGraph();
+            this.groupColors = [];
+            this.interactions.reset();
             this.container.replaceChildren();
             this.container.setAttribute("role", "alert");
-            this.container.textContent = "Unable to display this process graph. Check the assigned fields and filter the data.";
+            this.container.textContent = "Unable to display this process graph. Check the assigned fields, filter to a smaller graph, and refresh the visual. If this continues, reimport the visual.";
             this.options.host.eventService.renderingFailed(options, "Unable to render process graph.");
         }
     }
 
     public getFormattingModel(): powerbi.visuals.FormattingModel {
-        return buildFormattingModel(this.settings, this.options.host.colorPalette.isHighContrast);
+        const model = buildFormattingModel(this.settings, this.options.host.colorPalette.isHighContrast);
+        addGroupColorFormatting(model, this.groupColors, !!this.options.host.colorPalette.isHighContrast);
+        return model;
     }
 
     public destroy(): void {
